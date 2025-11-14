@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Career Guidance — Demo</title>
+<style>
+  body{font-family:system-ui,Segoe UI,Helvetica,Arial;margin:0;padding:20px;background:#f7f7fb}
+  .container{max-width:900px;margin:0 auto;background:#fff;padding:24px;border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,.06)}
+  h1,h2{margin:0 0 12px}
+  label{display:block;margin:10px 0 6px;font-weight:600}
+  input[type=text],select,textarea{width:100%;padding:8px;border:1px solid #ddd;border-radius:6px}
+  .hidden{display:none}
+  .btn{display:inline-block;padding:10px 14px;border-radius:8px;border:0;background:#2563eb;color:#fff;cursor:pointer;margin-top:12px}
+  .chip{display:inline-block;padding:6px 10px;background:#eef2ff;border-radius:999px;margin:6px 6px 0}
+  .flex{display:flex;gap:12px;flex-wrap:wrap}
+  .result-card{background:#f0f9ff;padding:12px;border-radius:8px;margin-top:12px}
+  footer{font-size:13px;color:#666;margin-top:18px}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Career Guidance — Demo (No backend)</h1>
+
+  <!-- Step 1: Intake -->
+  <div id="step-intake">
+    <h2>1. Student Info</h2>
+    <label for="name">Full name</label>
+    <input id="name" type="text" placeholder="Your name" />
+    <label for="grade">Grade / Year</label>
+    <input id="grade" type="text" placeholder="e.g. 10, 12, Diploma, UG" />
+    <label for="subjects">Subjects you like (comma separated)</label>
+    <input id="subjects" type="text" placeholder="Maths, Physics, Drawing, Biology" />
+    <label>Do you prefer practical / hands-on work or thinking & planning?</label>
+    <select id="workstyle">
+      <option value="mixed">Both</option>
+      <option value="hands">Hands-on / Practical</option>
+      <option value="thinking">Thinking / Planning</option>
+    </select>
+    <button id="start-quiz" class="btn">Start Personalized Quiz</button>
+  </div>
+
+  <!-- Step 2: Quiz (dynamic) -->
+  <div id="step-quiz" class="hidden">
+    <h2>2. Quiz</h2>
+    <div id="quiz-question"></div>
+    <div id="quiz-options" class="flex"></div>
+    <button id="next-q" class="btn hidden">Next</button>
+    <button id="finish-quiz" class="btn hidden">Finish & See Suggestions</button>
+  </div>
+
+  <!-- Step 3: Results -->
+  <div id="step-results" class="hidden">
+    <h2>3. Your Top Career Matches</h2>
+    <div id="results-list"></div>
+    <button id="download-report" class="btn">Download Report (PDF)</button>
+  </div>
+
+  <footer>
+    This demo runs completely in your browser. No data leaves your computer unless you copy or export it.
+  </footer>
+</div>
+
+<!-- js -->
+<script>
+/* ---------- Quiz configuration: career clusters and question bank ---------- */
+/* For each career cluster we keep a weight id and friendly name */
+const CLUSTERS = {
+  engineering: {name: "Engineering / Programming", desc: "Problem solving, coding, building systems."},
+  design: {name: "Design / Creative Arts", desc: "Visual communication, creativity, UX/UI."},
+  medical: {name: "Medical / Biology", desc: "Life sciences, healthcare, research."},
+  business: {name: "Business / Management", desc: "Commerce, entrepreneurship, finance."},
+  skilled: {name: "Skilled Trades / Hands-on", desc: "Mechanics, carpentry, electrician, practical work."}
+};
+
+/* Questions: each has options. Each option maps to score changes in clusters. */
+const QUESTION_BANK = [
+  {
+    id:'q1',
+    text:'Which activity sounds most enjoyable?',
+    options:[
+      {text:'Solve a complex math/riddle', score:{engineering:3,business:1}},
+      {text:'Design a poster or app screen', score:{design:3}},
+      {text:'Help someone with health problems', score:{medical:3}},
+      {text:'Sell a product or run a small shop', score:{business:3}},
+      {text:'Fix a machine or build something physical', score:{skilled:3}}
+    ]
+  },
+  {
+    id:'q2',
+    text:'How do you prefer to learn?',
+    options:[
+      {text:'By reading and theory', score:{engineering:2,medical:2}},
+      {text:'By watching and imitating', score:{design:2,skilled:2}},
+      {text:'By practicing in real situations', score:{skilled:3,business:1}},
+      {text:'By doing projects and making digital things', score:{engineering:2,design:2}}
+    ]
+  },
+  {
+    id:'q3',
+    text:'Choose a preferred task at work:',
+    options:[
+      {text:'Write code / create algorithms', score:{engineering:3}},
+      {text:'Create visual layouts / illustrations', score:{design:3}},
+      {text:'Perform experiments / lab work', score:{medical:3}},
+      {text:'Plan and organize a team', score:{business:3}},
+      {text:'Operate machinery or tools', score:{skilled:3}}
+    ]
+  },
+  {
+    id:'q4',
+    text:'What matters most to you in a job?',
+    options:[
+      {text:'High problem-solving & logic', score:{engineering:3}},
+      {text:'Creative expression', score:{design:3}},
+      {text:'Helping people & stable career', score:{medical:3}},
+      {text:'Independence & making money', score:{business:3}},
+      {text:'Practical skills & immediate results', score:{skilled:3}}
+    ]
+  }
+];
+
+/* ---------- Basic UI / quiz engine ---------- */
+let state = {
+  student: {},
+  answers: [],
+  scores: {}
+};
+
+function resetScores(){
+  state.scores = {};
+  Object.keys(CLUSTERS).forEach(k => state.scores[k]=0);
+}
+
+resetScores();
+
+const el = id => document.getElementById(id);
+
+el('start-quiz').onclick = () => {
+  const name = el('name').value.trim();
+  if(!name){ alert('Please enter name'); return; }
+  state.student.name = name;
+  state.student.grade = el('grade').value.trim();
+  state.student.subjects = el('subjects').value.trim();
+  state.student.workstyle = el('workstyle').value;
+  // Prepare dynamic quiz order based on subject hints (simple adaptation)
+  const likes = state.student.subjects.toLowerCase();
+  state.quiz = [...QUESTION_BANK]; // default
+  // If student likes arts, move design-relevant Qs earlier (simple bias)
+  if(likes.includes('draw') || likes.includes('art') || likes.includes('design')){
+    state.quiz.unshift({id:'pref-design', text:'You said you like creative things—pick one:', options:[
+      {text:'Digital art / UI design', score:{design:4}},
+      {text:'Drawing / painting', score:{design:3}},
+      {text:'Photography / video', score:{design:2}}
+    ]});
+  }
+  state.qIndex = 0;
+  el('step-intake').classList.add('hidden');
+  el('step-quiz').classList.remove('hidden');
+  renderQuestion();
+};
+
+function renderQuestion(){
+  const q = state.quiz[state.qIndex];
+  el('quiz-question').innerHTML = '<strong>'+q.text+'</strong>';
+  const optDiv = el('quiz-options');
+  optDiv.innerHTML = '';
+  q.options.forEach((o,idx)=>{
+    const b = document.createElement('button');
+    b.className = 'chip';
+    b.textContent = o.text;
+    b.onclick = ()=> selectOption(idx);
+    optDiv.appendChild(b);
+  });
+  // update buttons
+  el('next-q').classList.toggle('hidden', state.qIndex >= state.quiz.length-1);
+  el('finish-quiz').classList.toggle('hidden', state.qIndex < state.quiz.length-1);
+}
+
+function selectOption(idx){
+  const q = state.quiz[state.qIndex];
+  const opt = q.options[idx];
+  state.answers.push({q:q.id, choice: opt.text, score: opt.score});
+  // add scores
+  Object.keys(opt.score||{}).forEach(k => {
+    state.scores[k] = (state.scores[k]||0) + (opt.score[k]||0);
+  });
+  // disable options visually and move next
+  // move to next question automatically after slight delay
+  if(state.qIndex < state.quiz.length-1){
+    state.qIndex++;
+    setTimeout(renderQuestion, 150);
+  } else {
+    showResults();
+  }
+}
+
+el('next-q').onclick = ()=> { state.qIndex++; renderQuestion(); };
+el('finish-quiz').onclick = ()=> { showResults(); };
+
+function topThreeClusters(){
+  const arr = Object.keys(state.scores).map(k=>({k,score:state.scores[k]}));
+  arr.sort((a,b)=>b.score-a.score);
+  return arr.slice(0,3);
+}
+
+function showResults(){
+  el('step-quiz').classList.add('hidden');
+  el('step-results').classList.remove('hidden');
+  // compute top 3
+  const top = topThreeClusters();
+  const container = el('results-list');
+  container.innerHTML = '';
+  top.forEach((t,i)=>{
+    const c = CLUSTERS[t.k];
+    const div = document.createElement('div');
+    div.className = 'result-card';
+    div.innerHTML = '<h3>'+(i+1)+'. '+c.name+'</h3><p>'+c.desc+'</p>'
+      +'<p><strong>Score:</strong> '+t.score+'</p>';
+    container.appendChild(div);
+  });
+  // summary + recommended next steps
+  const steps = document.createElement('div');
+  steps.style.marginTop='12px';
+  steps.innerHTML = '<h4>Next steps (practical)</h4><ol>'
+    +'<li>Explore free courses: YouTube, NPTEL, Coursera free tier.</li>'
+    +'<li>Try a small project: build, design, or research one thing.</li>'
+    +'<li>Talk to a teacher or mentor about the top area above.</li></ol>';
+  container.appendChild(steps);
+}
+
+// Download simple report (client-side)
+el('download-report').onclick = ()=>{
+  const top = topThreeClusters();
+  const text = `Career Guidance Report\nName: ${state.student.name}\nGrade: ${state.student.grade}\nSubjects: ${state.student.subjects}\n\nTop matches:\n` + top.map((t,i)=>`${i+1}. ${CLUSTERS[t.k].name} (score ${t.score}) - ${CLUSTERS[t.k].desc}`).join('\n\n');
+  const blob = new Blob([text],{type:'text/plain'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = (state.student.name||'student')+'-career-report.txt';
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+};
+</script>
+</body>
+</html>
