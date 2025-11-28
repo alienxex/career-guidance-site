@@ -1,35 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Career Guidance | Intelligent Pathfinding</title>
     <meta name="description" content="AI-driven career pathfinder based on skills and traits.">
-    
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
     <!-- Three.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    
-    <!-- Google Fonts -->
+
+    <!-- Google Fonts & Custom CSS Styles -->
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
-        
+        @import url('https://fonts.googleapis.com/css?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
+
         :root {
             --glass-bg: rgba(0, 0, 0, 0.85);
             --glass-border: rgba(255, 255, 255, 0.15);
         }
 
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background-color: #000000; 
-            color: #e4e4e7; /* Zinc-200 */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #000000;
+            color: #e4e4e7;
+            /* Zinc-200 */
             overflow-x: hidden;
             margin: 0;
         }
 
-        h1, h2, h3, .brand-font {
+        h1,
+        h2,
+        h3,
+        .brand-font {
             font-family: 'Space Grotesk', sans-serif;
         }
 
@@ -45,7 +49,7 @@
             pointer-events: none;
         }
 
-        /* --- Glassmorphism Card --- */
+        /*-- Glassmorphism Card --- */
         .glass-panel {
             background: var(--glass-bg);
             backdrop-filter: blur(16px);
@@ -54,58 +58,67 @@
             box-shadow: 0 0 40px rgba(255, 255, 255, 0.05);
         }
 
-        /* --- Custom Inputs --- */
+        /*--- Custom Inputs --- */
         .input-mono {
             background-color: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.2);
             color: white;
             transition: all 0.3s ease;
         }
+
         .input-mono:focus {
             background-color: rgba(255, 255, 255, 0.1);
             border-color: #ffffff;
             outline: none;
             box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.5);
         }
+
         .input-mono.error {
-            border-color: #ef4444; /* Red-500 */
+            border-color: #ef4444;
+            /* Red-500 */
         }
 
-        /* --- Monochrome Buttons --- */
+        /*- Monochrome Buttons - */
         .btn-mono {
             transition: all 0.2s ease;
             transform: translateY(0);
         }
+
         .btn-mono-primary {
             background-color: #ffffff;
             color: #000000;
             border: 1px solid #ffffff;
         }
+
         .btn-mono-primary:hover:not(:disabled) {
             background-color: #d4d4d8;
             box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
         }
+
         .btn-mono-secondary {
             background-color: transparent;
             color: #ffffff;
             border: 1px solid rgba(255, 255, 255, 0.3);
         }
+
         .btn-mono-secondary:hover:not(:disabled) {
             border-color: #ffffff;
             background-color: rgba(255, 255, 255, 0.05);
         }
+
         .btn-mono:disabled {
             opacity: 0.4;
             cursor: not-allowed;
             filter: grayscale(1);
         }
 
-        /* --- Selection Styles --- */
+        /* --- Selection Styles -- */
         .selection-card {
             transition: all 0.3s ease;
             border: 1px solid rgba(255, 255, 255, 0.2);
-            background: rgba(0,0,0,0.4);
+            background: rgba(0, 0, 0, 0.4);
         }
+
         .selection-card.active {
             background: #ffffff;
             color: #000000;
@@ -113,29 +126,64 @@
             transform: translateY(-2px);
             box-shadow: 0 4px 20px rgba(255, 255, 255, 0.15);
         }
+
         .selection-card.active span {
             font-weight: 700;
         }
+
         .selection-card:hover:not(.active) {
             border-color: rgba(255, 255, 255, 0.6);
         }
 
         /* --- Quiz Animations --- */
-        .slide-in-right { animation: slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        .slide-out-left { animation: slideOutLeft 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        
-        @keyframes slideInRight {
-            from { opacity: 0; transform: translateX(50px); }
-            to { opacity: 1; transform: translateX(0); }
+        .slide-in-right {
+            animation: slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
+
+        .slide-out-left {
+            animation: slideOutLeft 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
         @keyframes slideOutLeft {
-            from { opacity: 1; transform: translateX(0); }
-            to { opacity: 0; transform: translateX(-50px); }
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+
+            to {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
         }
 
         /* --- Utilities --- */
-        .fade-in { animation: fadeIn 0.5s ease-out forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
         .spinner {
             border: 2px solid rgba(255, 255, 255, 0.1);
@@ -145,27 +193,74 @@
             height: 24px;
             animation: spin 1s linear infinite;
         }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
 
         /* Scrollbar */
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: #000; }
-        ::-webkit-scrollbar-thumb { background: #52525b; border-radius: 2px; }
-        
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #000;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #52525b;
+            border-radius: 2px;
+        }
+
         /* Markdown Styles for AI Response */
-        .ai-response strong { color: white; font-weight: 700; }
-        .ai-response ul { list-style-type: disc; padding-left: 1.2em; margin-top: 0.5em; margin-bottom: 0.5em; }
-        .ai-response li { margin-bottom: 0.3em; }
+        .ai-response strong {
+            color: white;
+            font-weight: 700;
+        }
+
+        .ai-response ul {
+            list-style-type: disc;
+            padding-left: 1.2em;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+
+        .ai-response li {
+            margin-bottom: 0.3em;
+        }
+        
+        /* Audio Player Styling */
+        audio {
+            width: 100%;
+            height: 40px;
+            margin-top: 10px;
+            border-radius: 0;
+        }
+        audio::-webkit-media-controls-panel {
+            background-color: #27272a; /* Zinc-800 */
+        }
+        audio::-webkit-media-controls-play-button,
+        audio::-webkit-media-controls-mute-button {
+            background-color: #52525b; /* Zinc-600 */
+            border-radius: 50%;
+        }
     </style>
 </head>
+
 <body class="flex items-center justify-center min-h-screen p-4">
 
     <!-- Background -->
     <div id="canvas-container"></div>
 
     <!-- Main Application Card -->
-    <div id="app" class="glass-panel rounded-none w-full max-w-2xl p-8 md:p-12 relative z-10 hidden opacity-0 transition-opacity duration-700 flex flex-col min-h-[600px] border-l border-r border-zinc-800">
-        
+    <div id="app" class="glass-panel rounded-none w-full max-w-2xl p-8 md:p-12 relative z-10 opacity-0 transition-opacity duration-700 flex flex-col min-h-[600px] border-l border-r border-zinc-800">
+
         <!-- Header -->
         <header class="mb-8 flex justify-between items-start border-b border-zinc-800 pb-4">
             <div>
@@ -179,7 +274,7 @@
                 <button id="settings-btn" class="text-zinc-500 hover:text-white transition-colors" title="Configure AI Model">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0330" />
                     </svg>
                 </button>
             </div>
@@ -206,7 +301,6 @@
             <button id="back-btn" type="button" class="btn-mono btn-mono-secondary px-6 py-3 rounded-none text-xs font-bold uppercase tracking-widest">
                 Back
             </button>
-            
             <div class="flex items-center gap-4">
                 <button id="next-btn" type="button" class="btn-mono btn-mono-primary px-8 py-3 rounded-none text-xs font-bold uppercase tracking-widest disabled:opacity-50">
                     Next Step
@@ -219,24 +313,23 @@
 
         <!-- System Message -->
         <div id="message-box" role="alert" aria-live="polite" class="mt-4 p-3 text-xs font-mono text-center hidden transition-all border border-zinc-800 bg-black"></div>
+
     </div>
 
     <!-- Welcome / Hero Overlay -->
-    <div id="welcome-screen" class="fixed inset-0 z-40 flex flex-col items-center justify-center pointer-events-none hidden bg-black">
+    <div id="welcome-screen" class="fixed inset-0 z-40 flex flex-col items-center justify-center bg-black">
         <div class="text-center pointer-events-auto transform transition-transform duration-700 p-6 border border-zinc-800 bg-black/50 backdrop-blur-md p-10 max-w-lg w-full">
             <div class="mb-8">
                 <h1 class="text-5xl md:text-6xl font-bold text-white tracking-tighter mb-2">
-                    CAREER<br/><span class="font-thin text-zinc-500">MATRIX</span>
+                    CAREER<br /><span class="font-thin text-zinc-500">MATRIX</span>
                 </h1>
                 <div class="h-1 w-20 bg-white mx-auto mt-4"></div>
             </div>
             <p class="text-zinc-400 text-sm mb-10 font-light leading-relaxed max-w-xs mx-auto">
-                Identify your ideal professional trajectory based on Stream, Interests, and Aptitude. <br/>
+                Identify your ideal professional trajectory based on Stream, Interests, and Aptitude. <br />
                 <span class="text-white font-bold text-xs mt-2 block uppercase">Optimized for Class 10 & 12</span>
             </p>
-            
-            <button id="start-btn" type="button"
-                    class="btn-mono btn-mono-primary w-full py-4 text-sm font-bold uppercase tracking-[0.2em] hover:bg-zinc-200 transition-colors">
+            <button id="start-btn" type="button" class="btn-mono btn-mono-primary w-full py-4 text-sm font-bold uppercase tracking-[0.2em] hover:bg-zinc-200 transition-colors">
                 Initialize System
             </button>
         </div>
@@ -244,873 +337,2126 @@
 
     <!-- AI Settings Modal -->
     <div id="settings-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/90 hidden backdrop-blur-sm fade-in">
-        <div class="bg-zinc-900 border border-zinc-700 p-8 max-w-md w-full relative shadow-2xl">
-            <button id="close-settings" class="absolute top-4 right-4 text-zinc-500 hover:text-white">&times;</button>
+        <div class="bg-zinc-900 border border-zinc-700 p-8 max-w-md w-full relative shadow-2xl rounded-lg">
+            <button id="close-settings" class="absolute top-4 right-4 text-zinc-500 hover:text-white text-xl font-bold">&times;</button>
             <h3 class="text-lg font-bold text-white mb-4 font-mono uppercase">Smart AI Configuration</h3>
             <p class="text-zinc-400 text-xs mb-6 leading-relaxed">
-                Enable advanced AI insights using the Hugging Face API (Open Source).
-                <br/><br/>
-                1. Get a FREE token: <a href="https://huggingface.co/settings/tokens" target="_blank" class="text-white underline">huggingface.co</a>
-                <br/>
+                To enable advanced AI insights and roadmaps, you need a Gemini API key.
+                <br /><br />
+                1. Get a FREE key from Google AI Studio.
+                <br />
                 2. Paste it below.
             </p>
-            <label class="block text-[10px] font-bold text-zinc-500 uppercase mb-2">Hugging Face Token</label>
-            <input id="hf-token-input" type="password" class="w-full p-3 input-mono text-sm mb-6" placeholder="hf_...">
-            
+            <label class="block text-[10px] font-bold text-zinc-500 uppercase mb-2">Gemini API Key</label>
+            <input id="hf-token-input" type="password" class="w-full p-3 input-mono text-sm mb-6 rounded-none" placeholder="AIzaSy...">
             <div class="flex justify-end gap-4">
-                <button id="save-settings" class="btn-mono btn-mono-primary px-6 py-2 text-xs font-bold uppercase">Save Token</button>
+                <button id="save-settings" class="btn-mono btn-mono-primary px-6 py-2 text-xs font-bold uppercase rounded-none">Save Key</button>
             </div>
         </div>
     </div>
 
-<!-- Module Logic -->
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+    <!-- Module Logic -->
+    <script type="module">
+        import {
+            initializeApp
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import {
+            getAuth,
+            signInAnonymously,
+            signInWithCustomToken,
+            onAuthStateChanged
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import {
+            getFirestore,
+            doc,
+            setDoc
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        // import {
+        //     setLogLevel
+        // } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        // setLogLevel('debug');
 
-    /* =========================================
-       MODULE: GEMINI AI INTEGRATION
-    ========================================= */
-    const AIModule = {
-        token: localStorage.getItem('gemini_token') || "",
 
-        saveToken(token) {
-            this.token = token;
-            localStorage.setItem('gemini_token', token);
-        },
+        /* ===
+        MODULE: GEMINI AI INTEGRATION (ENHANCED)
+        ======================================== */
 
-        async generateInsight(profile) {
-            if (!this.token) return null;
+        // Note: API key is stored in localStorage for persistence across sessions
+        const AlModule = {
+            token: localStorage.getItem('gemini_token') || "",
 
-            let prompt = "";
-            const is10th = profile.user.grade === '10';
-            const lowMarks = parseInt(profile.user.marks) < 60;
-            
-            prompt = `
-            You are a senior career counselor. Analyze this student:
-            - Name: ${profile.user.name}
-            - Grade: ${profile.user.grade}
-            - Marks: ${profile.user.marks}%
-            - ${is10th ? 'Strongest Subject: '+profile.user.subject : 'Stream: '+profile.user.stream}
-            - Interests: ${profile.interests.join(', ')}
-            - Top Traits: ${Object.entries(profile.scores).sort((a,b)=>b[1]-a[1]).slice(0,3).map(x=>x[0]).join(', ')}
+            saveToken(token) {
+                this.token = token;
+                localStorage.setItem('gemini_token', token);
+            },
 
-            ${lowMarks ? "IMPORTANT: This student has lower academic marks. Focus on SKILLS, VOCATIONAL PATHS, and PRACTICAL STRENGTHS." : ""}
+            // Function to implement exponential backoff for API calls
+            async fetchWithBackoff(url, options, maxRetries = 5) {
+                for (let attempt = 0; attempt < maxRetries; attempt++) {
+                    try {
+                        const response = await fetch(url, options);
 
-            Provide a 3-point analysis using bolding for key terms:
-            1. Recommended Path (${is10th ? 'Stream' : 'Career Role'}).
-            2. Why it fits their personality/interests (be encouraging).
-            3. A practical first step (Course, Project, or Skill).
-            
-            Keep it concise, professional, and supportive.
-            `;
+                        if (response.status !== 429) { // 429 is Too Many Requests
+                            return response;
+                        }
 
-            try {
-                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${this.token}`;
-                const response = await fetch(url, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-                });
+                        // If 429, wait using exponential backoff logic
+                        const delay = Math.pow(2, attempt) * 1000 + Math.random() * 1000;
+                        await new Promise(resolve => setTimeout(resolve, delay));
 
-                if (!response.ok) throw new Error("Gemini API Error");
-                const result = await response.json();
-                return result.candidates[0].content.parts[0].text;
-            } catch (e) { 
-                console.error(e); 
-                return null; 
-            }
-        },
+                    } catch (error) {
+                        console.error(`Fetch attempt ${attempt + 1} failed: `, error);
+                        if (attempt === maxRetries - 1) throw error;
+                        const delay = Math.pow(2, attempt) * 1000 + Math.random() * 1000;
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                    }
+                }
+                throw new Error("API call failed after multiple retries.");
+            },
 
-        async generateRoadmap(profile) {
-            if (!this.token) return null;
-            
-            const prompt = `
-            Create a 4-week crash course roadmap for a student interested in ${profile.recommendations[0]?.name || 'their field'} with traits ${Object.entries(profile.scores).sort((a,b)=>b[1]-a[1]).slice(0,2).map(x=>x[0]).join(', ')}.
-            Format as simple Markdown with Week 1, Week 2, etc. Focus on practical steps.
-            `;
+            async generateInsight(profile) {
+                if (!this.token) return null;
 
-            try {
-                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${this.token}`;
-                const response = await fetch(url, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-                });
+                const is10th = profile.user.grade === '10';
+                const lowMarks = parseInt(profile.user.marks) < 60;
 
-                if (!response.ok) throw new Error("Gemini API Error");
-                const result = await response.json();
-                return result.candidates[0].content.parts[0].text;
-            } catch (e) { console.error(e); return "Error generating roadmap."; }
-        }
-    };
-
-    /* =========================================
-       MODULE: 3D BACKGROUND
-    ========================================= */
-    const ThreeBG = {
-        init() {
-            const container = document.getElementById('canvas-container');
-            if (!container || !window.THREE) return;
-            const scene = new THREE.Scene();
-            scene.fog = new THREE.FogExp2(0x000000, 0.002);
-            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-            container.appendChild(renderer.domElement);
-            scene.add(new THREE.AmbientLight(0x404040, 2));
-            const dirLight = new THREE.DirectionalLight(0xffffff, 1);
-            dirLight.position.set(10, 10, 5);
-            scene.add(dirLight);
-            const gridHelper = new THREE.GridHelper(100, 50, 0x333333, 0x111111);
-            gridHelper.position.y = -10;
-            scene.add(gridHelper);
-            const particleCount = 30;
-            const geometry = new THREE.TetrahedronGeometry(1, 0);
-            const material = new THREE.MeshBasicMaterial({ color: 0x52525b, wireframe: true, transparent: true, opacity: 0.3 });
-            const group = new THREE.Group();
-            scene.add(group);
-            for (let i = 0; i < particleCount; i++) {
-                const mesh = new THREE.Mesh(geometry, material);
-                mesh.position.set((Math.random()-0.5)*50, (Math.random()-0.5)*50, (Math.random()-0.5)*30);
-                mesh.rotation.set(Math.random()*Math.PI, Math.random()*Math.PI, 0);
-                mesh.userData = { speed: Math.random()*0.01 + 0.005 };
-                group.add(mesh);
-            }
-            camera.position.z = 20;
-            const animate = () => {
-                requestAnimationFrame(animate);
-                group.rotation.y += 0.002;
-                group.children.forEach(m => { m.rotation.x += m.userData.speed; m.rotation.y += m.userData.speed; });
-                renderer.render(scene, camera);
-            };
-            animate();
-            window.addEventListener('resize', () => {
-                camera.aspect = window.innerWidth / window.innerHeight;
-                camera.updateProjectionMatrix();
-                renderer.setSize(window.innerWidth, window.innerHeight);
-            });
-        }
-    };
-
-    /* =========================================
-       MODULE: UTILITIES
-    ========================================= */
-    const Utils = {
-        sanitize: (str) => {
-            const temp = document.createElement('div');
-            temp.textContent = str;
-            return temp.innerHTML;
-        },
-        showError: (inputId, msg, show) => {
-            const input = document.getElementById(inputId);
-            if(!input) return;
-            let errEl = document.getElementById(inputId + "-error");
-            if (!errEl) {
-                errEl = document.createElement('p');
-                errEl.id = inputId + "-error";
-                errEl.className = "text-red-500 text-[10px] mt-1 font-mono hidden";
-                input.parentNode.insertBefore(errEl, input.nextSibling);
-            }
-            if (show) { input.classList.add('error'); errEl.textContent = `> ${msg}`; errEl.classList.remove('hidden'); }
-            else { input.classList.remove('error'); errEl.classList.add('hidden'); }
-        }
-    };
-
-    /* =========================================
-       MODULE: APP DATA & LOGIC
-    ========================================= */
-    const AppData = {
-        traits: ['Logic', 'Creativity', 'Communication', 'DetailOrientation', 'Empathy', 'Physical', 'Resilience'],
-        
-        streams: [
-            { id: 'SciencePCM', label: 'Science (PCM)', tags: ['Tech', 'Logic', 'Mech'] },
-            { id: 'SciencePCB', label: 'Science (PCB)', tags: ['Bio', 'Nature', 'Research'] },
-            { id: 'Commerce', label: 'Commerce', tags: ['Finance', 'Business', 'Math'] },
-            { id: 'Arts', label: 'Arts & Humanities', tags: ['Design', 'Media', 'Social'] }
-        ],
-
-        subjects: [
-            { id: 'Math', label: 'Mathematics', tags: ['Logic', 'Finance', 'Tech'] },
-            { id: 'Science', label: 'Science', tags: ['Bio', 'Research', 'Tech'] },
-            { id: 'Social', label: 'Social Studies', tags: ['Social', 'Law', 'History'] },
-            { id: 'English', label: 'English/Literature', tags: ['Communication', 'Media', 'Writing'] },
-            { id: 'Arts', label: 'Arts/Craft', tags: ['Design', 'Creativity'] },
-            { id: 'CompApp', label: 'Computer Applications', tags: ['Tech', 'Logic'] }
-        ],
-
-        interestsList: [
-            { id: 'Sports', label: 'Sports & Fitness', streams: ['All'], tags: ['Sports', 'Physical'] },
-            { id: 'Gaming', label: 'Gaming & Esports', streams: ['All'], tags: ['Tech', 'Creativity'] },
-            { id: 'Music', label: 'Music & Audio', streams: ['All'], tags: ['Creativity', 'Communication'] },
-            { id: 'SocialService', label: 'Social Service', streams: ['All'], tags: ['Empathy', 'Social'] },
-            { id: 'Management', label: 'Leadership', streams: ['All'], tags: ['Communication', 'Logic'] },
-            { id: 'Coding', label: 'Coding/Software', streams: ['SciencePCM'], tags: ['Tech', 'Logic'] },
-            { id: 'Robotics', label: 'Robotics', streams: ['SciencePCM'], tags: ['Mech', 'Tech'] },
-            { id: 'Space', label: 'Astronomy', streams: ['SciencePCM'], tags: ['Research', 'Logic'] },
-            { id: 'Architecture', label: 'Design & Build', streams: ['SciencePCM'], tags: ['Design', 'Logic'] },
-            { id: 'Medicine', label: 'Medicine', streams: ['SciencePCB'], tags: ['Bio', 'Empathy'] },
-            { id: 'Psychology', label: 'Psychology', streams: ['SciencePCB', 'Arts'], tags: ['Bio', 'Social'] },
-            { id: 'Stocks', label: 'Stocks/Trading', streams: ['Commerce'], tags: ['Finance', 'Logic'] },
-            { id: 'Economics', label: 'Economics', streams: ['Commerce', 'Arts'], tags: ['Finance', 'Research'] },
-            { id: 'Writing', label: 'Journalism', streams: ['Arts'], tags: ['Media', 'Creativity'] },
-            { id: 'Law', label: 'Law & Debate', streams: ['Arts', 'Commerce'], tags: ['Law', 'Logic'] },
-            { id: 'History', label: 'History', streams: ['Arts'], tags: ['Research', 'Communication'] },
-            { id: 'Photography', label: 'Photography', streams: ['All'], tags: ['Design', 'Creativity'] }
-        ],
-
-        // EXTENDED QUESTION BANK
-        questionBank: [
-            { tags: ['Logic'], text: "I enjoy solving complex puzzles or math problems.", weights: { Logic: 5, Creativity: -1 } },
-            { tags: ['Logic'], text: "I like analyzing data to find trends or patterns.", weights: { Logic: 5, DetailOrientation: 3 } },
-            { tags: ['Creativity'], text: "I often have ideas for new inventions or stories.", weights: { Creativity: 5, Logic: 1 } },
-            { tags: ['Design'], text: "I notice when a website or poster has bad colors or fonts.", weights: { Creativity: 5, DetailOrientation: 3 } },
-            { tags: ['Communication'], text: "I feel confident speaking in front of a group.", weights: { Communication: 5, Empathy: 1 } },
-            { tags: ['Social'], text: "I want a career where I directly help people improve their lives.", weights: { Empathy: 5, Communication: 3 } },
-            { tags: ['Tech'], text: "I wonder how the apps on my phone actually work behind the scenes.", weights: { Logic: 4, Creativity: 2 } },
-            { tags: ['Bio'], text: "I am not grossed out by blood or biology experiments.", weights: { DetailOrientation: 4, Empathy: 3 } },
-            { tags: ['Finance'], text: "I like the idea of managing money or starting a business.", weights: { Logic: 3, Communication: 4 } },
-            { tags: ['Law'], text: "I enjoy debating and proving my point with logic.", weights: { Logic: 4, Communication: 4 } },
-            { tags: ['Personality'], text: "I usually take charge in group projects.", weights: { Communication: 5, Logic: 2 } },
-            { tags: ['Personality'], text: "I prefer planning everything in detail before starting.", weights: { DetailOrientation: 5, Creativity: -1 } },
-            { tags: ['Grit'], text: "I keep trying even when a problem seems impossible.", weights: { Resilience: 5, Logic: 2 } },
-            { tags: ['Practical'], text: "I prefer learning by doing with my hands rather than reading.", weights: { Physical: 5, Logic: 2 } },
-            { tags: ['Practical'], text: "I enjoy fixing things that are broken around the house.", weights: { Physical: 4, Logic: 4 } },
-            { tags: ['Physical'], text: "I would hate a job where I have to sit at a desk all day.", weights: { Physical: 5, DetailOrientation: -2 } }
-        ],
-
-        streamDatabase: [
-            { name: "Science (PCM)", subject: ["Math", "Science", "CompApp"], tags: ["Tech", "Logic", "Mech", "Research"], desc: "Engineering, Architecture, Aviation.", path: "Select PCM in Class 11" },
-            { name: "Science (PCB)", subject: ["Science", "English"], tags: ["Bio", "Nature", "Medicine", "Research"], desc: "Medicine, Psychology, Biotech.", path: "Select PCB in Class 11" },
-            { name: "Commerce", subject: ["Math", "Social"], tags: ["Finance", "Business", "Stocks", "Management"], desc: "CA, MBA, Economics, Business.", path: "Select Commerce in Class 11" },
-            { name: "Arts & Humanities", subject: ["Social", "English", "Arts"], tags: ["Media", "Law", "Writing", "Fashion", "Social"], desc: "Law, Design, Journalism, Civil Services.", path: "Select Arts in Class 11" }
-        ],
-
-        careerDatabase: [
-            { name: "Software Engineer", stream: ["SciencePCM"], tags: ["Tech", "Logic"], desc: "Building digital systems.", path: "B.Tech CSE" },
-            { name: "Doctor (MBBS)", stream: ["SciencePCB"], tags: ["Medicine", "Bio"], desc: "Treating patients.", path: "NEET -> MBBS" },
-            { name: "Chartered Accountant", stream: ["Commerce"], tags: ["Accounting", "Finance"], desc: "Financial auditing.", path: "CA Course" },
-            { name: "Lawyer", stream: ["Arts", "Commerce"], tags: ["Law", "Debate"], desc: "Legal advocacy.", path: "BA LLB" },
-            { name: "Graphic Designer", stream: ["Arts", "SciencePCM"], tags: ["Design", "Tech"], desc: "Visual communication.", path: "B.Des" },
-            { name: "Data Scientist", stream: ["SciencePCM", "Commerce"], tags: ["Math", "Tech"], desc: "Analyzing data.", path: "B.Sc Data Science" },
-            { name: "Psychologist", stream: ["SciencePCB", "Arts"], tags: ["Bio", "Social"], desc: "Mental health therapy.", path: "BA/B.Sc Psychology" },
-            { name: "Entrepreneur", stream: ["Commerce", "Arts", "SciencePCM"], tags: ["Business", "Management"], desc: "Starting ventures.", path: "BBA / MBA" },
-            { name: "Professional Athlete", stream: ["Arts", "SciencePCM", "Commerce"], tags: ["Sports", "Physical"], desc: "Competitive sports.", path: "Sports Academy" },
-            { name: "Electrician/Technician", stream: ["SciencePCM", "Arts"], tags: ["Practical", "Tech"], desc: "Skilled trade work.", path: "ITI / Diploma" },
-            { name: "Event Manager", stream: ["Commerce", "Arts"], tags: ["Management", "Social"], desc: "Organizing large events.", path: "BBA Event Mgmt" }
-        ],
-
-        state: {
-            step: 0,
-            user: { name: '', grade: '10', stream: '', subject: '', marks: '', interests: [] },
-            answers: {},
-            activeQuestions: [],
-            recommendations: [],
-            scores: {},
-            aiResponse: null,
-            isRefining: false,
-            refinedInterests: [],
-            quizIndex: 0
-        },
-
-        checkAmbiguity() {
-            const rawScores = {};
-            this.traits.forEach(t => rawScores[t] = 0);
-            this.state.activeQuestions.forEach(q => {
-                const val = this.state.answers[q.id] || 3;
-                for (const t in q.weights) rawScores[t] += (val - 3) * q.weights[t];
-            });
-            const scores = {};
-            this.traits.forEach(t => scores[t] = Math.max(0, Math.min(100, 50 + (rawScores[t] * 5))));
-            const topTraitScore = Math.max(...Object.values(scores));
-            const minTraitScore = Math.min(...Object.values(scores));
-            return (topTraitScore - minTraitScore) < 15 || this.state.user.interests.length > 5;
-        },
-
-        generateQuiz() {
-            const marks = parseInt(this.state.user.marks) || 0;
-            const targetLength = marks < 60 ? 15 : 10;
-
-            const userInterests = this.state.user.interests; 
-            const relevantTags = new Set();
-            
-            // Add tags from interests
-            userInterests.forEach(intId => {
-                const interestObj = this.interestsList.find(i => i.id === intId);
-                if(interestObj) interestObj.tags.forEach(t => relevantTags.add(t));
-            });
-
-            // Add tags from Stream/Subject
-            if(this.state.user.grade === '10') {
-                const subObj = this.subjects.find(s => s.id === this.state.user.subject);
-                if(subObj) subObj.tags.forEach(t => relevantTags.add(t));
-            } else {
-                const strObj = this.streams.find(s => s.id === this.state.user.stream);
-                if(strObj) strObj.tags.forEach(t => relevantTags.add(t));
-            }
-
-            // 1. Prioritize Matches
-            let matchedQuestions = this.questionBank.filter(q => 
-                q.tags.some(t => relevantTags.has(t))
-            ).map(q => ({...q, id: `dyn_${Math.random().toString(36).substr(2,9)}`}));
-            matchedQuestions.sort(() => 0.5 - Math.random());
-
-            // 2. Base Personality Questions
-            const baseQuestions = this.questionBank.filter(q => 
-                ['Personality', 'Grit', 'Logic', 'Creativity'].includes(q.tags[0])
-            ).map((q,i) => ({...q, id: `base_${i}`}));
-            
-            // 3. Practical Questions
-            const practicalQuestions = this.questionBank.filter(q => 
-                ['Practical', 'Physical'].includes(q.tags[0])
-            ).map((q,i) => ({...q, id: `prac_${i}`}));
-
-            let quizSet = [...matchedQuestions];
-            quizSet = [...quizSet, ...baseQuestions];
-            
-            if (marks < 60) {
-                quizSet = [...quizSet, ...practicalQuestions];
-            }
-
-            // De-duplicate
-            quizSet = quizSet.filter((v,i,a)=>a.findIndex(t=>(t.text===v.text))===i);
-            
-            // Slice to target length
-            if (quizSet.length > targetLength) {
-                quizSet = quizSet.slice(0, targetLength); 
-            }
-
-            this.state.activeQuestions = quizSet;
-            this.state.quizIndex = 0;
-        },
-
-        calculateResults() {
-            const { answers, activeQuestions } = this.state;
-            const raw = {}; 
-            this.traits.forEach(t => raw[t] = 0);
-            activeQuestions.forEach(q => {
-                const val = answers[q.id] || 3;
-                for (const t in q.weights) raw[t] += (val - 3) * q.weights[t];
-            });
-            this.traits.forEach(t => {
-                this.state.scores[t] = Math.max(0, Math.min(100, 50 + (raw[t] * 5)));
-            });
-
-            let userInterests = this.state.user.interests;
-            if (this.state.isRefining && this.state.refinedInterests.length > 0) {
-                userInterests = this.state.refinedInterests;
-            }
-
-            if (this.state.user.grade === '10') {
-                const userSubject = this.state.user.subject;
-                const rankedStreams = this.streamDatabase.map(stream => {
-                    let score = 0;
-                    if(stream.subject.includes(userSubject)) score += 40;
-                    const userTags = new Set();
-                    userInterests.forEach(intId => {
-                        const obj = this.interestsList.find(i => i.id === intId);
-                        if(obj) obj.tags.forEach(t => userTags.add(t));
-                    });
-                    const tagMatch = stream.tags.filter(t => userTags.has(t)).length;
-                    score += tagMatch * 15;
-                    return { ...stream, finalScore: Math.min(99, 40 + score + Math.floor(Math.random()*10)) };
-                });
-                this.state.recommendations = rankedStreams.sort((a,b) => b.finalScore - a.finalScore).slice(0, 2);
-            } else {
-                const userStream = this.state.user.stream;
-                let candidates = this.careerDatabase.filter(job => job.stream.includes(userStream));
-                
-                if (candidates.length < 3 || parseInt(this.state.user.marks) < 60) {
-                    candidates = [...candidates, ...this.careerDatabase.filter(job => 
-                        job.stream.includes("Arts") || job.tags.includes("Practical") || job.tags.includes("Sports")
-                    )];
+                // Combine predefined interests and custom interest for the prompt
+                const allInterests = [...profile.user.interests];
+                if (profile.user.customInterest.length > 2) {
+                    allInterests.push(profile.user.customInterest);
                 }
 
-                const ranked = candidates.map(job => {
-                    let score = 0;
-                    const userTags = new Set();
-                    userInterests.forEach(intId => {
-                        const obj = this.interestsList.find(i => i.id === intId);
-                        if(obj) obj.tags.forEach(t => userTags.add(t));
+                const prompt = `
+You are a senior career counselor specializing in youth guidance. Analyze this student's
+profile to offer concise, supportive advice.
+- Name: ${profile.user.name}
+- Grade: ${profile.user.grade}
+- Marks: ${profile.user.marks}%
+- ${is10th ? 'Strongest Subject: ' + profile.user.subject : 'Stream: ' + profile.user.stream}
+- Key Interests: ${allInterests.join(', ')}
+- Top Traits: ${Object.entries(profile.scores).sort((a,b)=>b[1]-a[1]).slice(0,3).map(x=>x[0]).join(', ')}
+${lowMarks ? "IMPORTANT: This student has below-average academic marks. Your analysis MUST emphasize SKILLS, VOCATIONAL PATHS, and practical strengths derived from their high traits/interests, rather than solely academic merit." : ""}
+
+Provide a 3-point analysis in Markdown format using a bulleted list. Use bolding for key terms.
+
+1. **Core Strength Alignment**: What is their biggest natural advantage (trait or interest) and how does it relate to the recommendations?
+2. **Primary Focus Area**: What is the most fitting high-level domain (e.g., Creative Arts, Technical Engineering, Business/Finance)?
+3. **Immediate Action**: Suggest one very specific, actionable first step they can take this week (e.g., "Start a portfolio website," "Research an online certification," or "Shadow a professional").
+`;
+                try {
+                    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${this.token}`;
+
+                    const response = await this.fetchWithBackoff(url, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            contents: [{
+                                parts: [{
+                                    text: prompt
+                                }]
+                            }]
+                        })
                     });
-                    const tagMatchCount = job.tags.filter(t => userTags.has(t)).length;
-                    const multiplier = this.state.isRefining ? 40 : 25;
-                    score += tagMatchCount * multiplier; 
-                    
-                    if (job.tags.includes("Practical") && this.state.scores['Physical'] > 60) score += 30;
 
-                    return { ...job, finalScore: Math.min(99, Math.round(score + 50)) };
-                });
-                const uniqueRanked = ranked.filter((v,i,a)=>a.findIndex(t=>(t.name===v.name))===i);
-                this.state.recommendations = uniqueRanked.sort((a,b) => b.finalScore - a.finalScore).slice(0, 3);
-            }
-        }
-    };
+                    if (!response.ok) throw new Error(`Gemini API Error: ${response.statusText}`);
+                    const result = await response.json();
+                    return result.candidates?.[0]?.content?.parts?.[0]?.text || "AI analysis failed to generate content.";
 
-    /* =========================================
-       MODULE: FIREBASE
-    ========================================= */
-    const FirebaseModule = {
-        db: null, userId: null,
-        async init() {
-            const configRaw = (typeof __firebase_config !== 'undefined') ? JSON.parse(__firebase_config) : null;
-            if (!configRaw) return;
-            try {
-                const app = initializeApp(configRaw);
-                this.db = getFirestore(app);
-                const auth = getAuth(app);
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) await signInWithCustomToken(auth, __initial_auth_token);
-                else await signInAnonymously(auth);
-                onAuthStateChanged(auth, (user) => { 
-                    if(user) { this.userId = user.uid; } 
-                });
-            } catch (e) { 
-                console.error("Firebase Init Error:", e); 
-                if (typeof UI !== 'undefined') UI.toast("Cloud sync unavailable", true); 
-            }
-        },
-        async save() {
-            if (!this.db || !this.userId) return;
-            const appId = (typeof __app_id !== 'undefined') ? __app_id : 'default';
-            try {
-                await setDoc(doc(this.db, `artifacts/${appId}/users/${this.userId}/results`, `result_${Date.now()}`), AppData.state);
-                if (typeof UI !== 'undefined') UI.toast("DATA SYNCED TO CLOUD");
-            } catch (e) { 
-                console.error("Save Failed:", e);
-                if (typeof UI !== 'undefined') UI.toast("SYNC FAILED", true); 
-            }
-        }
-    };
+                } catch (e) {
+                    console.error("AI Insight Generation Failed:", e);
+                    return null;
+                }
+            },
 
-    /* =========================================
-       MODULE: UI CONTROLLER
-    ========================================= */
-    const UI = {
-        els: {},
-        steps: [
-            { id: 0, render: 'renderIdentity', validate: 'validateIdentity' },
-            { id: 1, render: 'renderBackground', validate: 'validateBackground' },
-            { id: 2, render: 'renderInterests', validate: 'validateInterests' },
-            { id: 3, render: 'renderQuiz', validate: () => true },
-            { id: 4, render: 'renderResults', validate: () => true }
-        ],
+            async generateRoadmap(profile) {
+                if (!this.token) return "Error: AI token not configured.";
 
-        init() {
-            this.els = {
-                app: document.getElementById('app'),
-                content: document.getElementById('content-area'),
-                progressBar: document.getElementById('progress-bar'),
-                progressContainer: document.getElementById('progress-container'),
-                nextBtn: document.getElementById('next-btn'),
-                backBtn: document.getElementById('back-btn'),
-                calcBtn: document.getElementById('calculate-btn'),
-                footer: document.getElementById('nav-footer'),
-                loading: document.getElementById('initial-loading'),
-                msgBox: document.getElementById('message-box'),
-                welcome: document.getElementById('welcome-screen'),
-                progressText: document.getElementById('progress-text'),
-                settingsBtn: document.getElementById('settings-btn'),
-                settingsModal: document.getElementById('settings-modal'),
-                hfInput: document.getElementById('hf-token-input'),
-                saveSettings: document.getElementById('save-settings'),
-                closeSettings: document.getElementById('close-settings')
-            };
+                const topRec = profile.recommendations[0]?.name || 'a broad career field';
+                const topTraits = Object.entries(profile.scores).sort((a,b)=>b[1]-a[1]).slice(0,2).map(x=>x[0]).join(', ');
 
-            this.els.welcome.classList.remove('hidden');
-            document.getElementById('start-btn').addEventListener('click', () => {
-                this.els.welcome.classList.add('hidden');
-                this.els.app.classList.remove('hidden');
-                setTimeout(() => this.els.app.classList.remove('opacity-0'), 50);
-                this.gotoStep(0);
-            });
-            this.els.nextBtn.addEventListener('click', () => this.nextStep());
-            this.els.backBtn.addEventListener('click', () => this.prevStep());
-            this.els.calcBtn.addEventListener('click', () => this.showResults());
+                const prompt = `
+Create a realistic, 4-week structured learning roadmap for a student transitioning into the
+field of **${topRec}**.
+The roadmap should be tailored to their top traits: ${topTraits}.
+Each week must focus on a different, practical learning objective (e.g., concept, tool, project).
+Format using only markdown headings and lists for clarity (e.g., ## Week 1).
+`;
+                try {
+                    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${this.token}`;
+
+                    const response = await this.fetchWithBackoff(url, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            contents: [{
+                                parts: [{
+                                    text: prompt
+                                }]
+                            }]
+                        })
+                    });
+
+                    if (!response.ok) throw new Error(`Gemini API Error: ${response.statusText}`);
+                    const result = await response.json();
+                    return result.candidates?.[0]?.content?.parts?.[0]?.text || "Error generating roadmap.";
+
+                } catch (e) {
+                    console.error("AI Roadmap Generation Failed:", e);
+                    return "Error: Could not connect to AI service or generate content.";
+                }
+            },
+
+            async generateJobDescription(jobTitle, topTraits) {
+                if (!this.token) return "Error: AI token not configured.";
+
+                const prompt = `
+You are a professional hiring manager. Write a detailed job description (JD) for a **Junior ${jobTitle}**.
+The JD must contain three sections:
+1. **Role Overview** (2 sentences max): Describe the core function.
+2. **Key Responsibilities**: A bulleted list of 4 key daily tasks.
+3. **Ideal Candidate Profile**: A short paragraph emphasizing the importance of these traits: ${topTraits}.
+Format the output using markdown.
+`;
+                try {
+                    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${this.token}`;
+
+                    const response = await this.fetchWithBackoff(url, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            contents: [{
+                                parts: [{
+                                    text: prompt
+                                }]
+                            }]
+                        })
+                    });
+
+                    if (!response.ok) throw new Error(`Gemini API Error: ${response.statusText}`);
+                    const result = await response.json();
+                    return result.candidates?.[0]?.content?.parts?.[0]?.text || "Error generating job description.";
+
+                } catch (e) {
+                    console.error("AI JD Generation Failed:", e);
+                    return "Error: Could not generate Job Description.";
+                }
+            },
+
+            async generateInterviewQuestion(jobTitle, topTrait) {
+                if (!this.token) return "Error: AI token not configured.";
+
+                const prompt = `
+As a senior interviewer, generate one challenging behavioral interview question for a
+**Junior ${jobTitle}** role.
+The question must be phrased to explicitly test the candidate's proficiency in their top trait:
+**${topTrait}**.
+Provide only the question, formatted in bold text.
+`;
+                try {
+                    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${this.token}`;
+
+                    const response = await this.fetchWithBackoff(url, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            contents: [{
+                                parts: [{
+                                    text: prompt
+                                }]
+                            }]
+                        })
+                    });
+
+                    if (!response.ok) throw new Error(`Gemini API Error: ${response.statusText}`);
+                    const result = await response.json();
+                    return result.candidates?.[0]?.content?.parts?.[0]?.text || "Error generating question.";
+                } catch (e) {
+                    console.error("AI Question Generation Failed:", e);
+                    return "Error: Could not generate Interview Question.";
+                }
+            },
+
+            async generateImprovementPrompt(lowTrait) {
+                if (!this.token) return "Error: AI token not configured.";
+
+                const prompt = `
+You are a mindful mentor. Generate one powerful reflective writing prompt for a high school
+student focused on improving their lowest scoring trait: **${lowTrait}**.
+The prompt should start with a specific scenario (2-3 sentences) where this trait is
+challenged, and end with a question that encourages a structured, actionable plan for growth.
+Format the output in a single paragraph, bolding the scenario description and the final
+question.
+`;
+                try {
+                    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${this.token}`;
+
+                    const response = await this.fetchWithBackoff(url, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            contents: [{
+                                parts: [{
+                                    text: prompt
+                                }]
+                            }]
+                        })
+                    });
+
+                    if (!response.ok) throw new Error(`Gemini API Error: ${response.statusText}`);
+                    const result = await response.json();
+                    return result.candidates?.[0]?.content?.parts?.[0]?.text || "Error generating reflection prompt.";
+
+                } catch (e) {
+                    console.error("AI Improvement Prompt Failed:", e);
+                    return "Error: Could not generate Improvement Prompt.";
+                }
+            },
+
+            async generateGroundedMajors(topRec, userTags) {
+                if (!this.token) return "Error: AI token not configured.";
+
+                const tagsStr = Array.from(userTags).filter(t => !['Physical', 'Resilience'].includes(t)).join(', ');
+
+                const prompt = `
+Find three specific, in-demand college majors (undergraduate level) that strongly relate to
+the career path of **${topRec}** and the key interests/skills: ${tagsStr}.
+For each major, provide its name and a brief (1-sentence) explanation of why it is relevant in
+today's job market.
+Format as a numbered list. Use Google Search to ensure majors are current and relevant.
+`;
+                try {
+                    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${this.token}`;
+
+                    const response = await this.fetchWithBackoff(url, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            contents: [{
+                                parts: [{
+                                    text: prompt
+                                }]
+                            }],
+                            tools: [{
+                                "google_search": {}
+                            }] // Enable Google Search grounding
+                        })
+                    });
+
+                    if (!response.ok) throw new Error(`Gemini API Error: ${response.statusText}`);
+                    const result = await response.json();
+                    return result.candidates?.[0]?.content?.parts?.[0]?.text || "Error finding majors.";
+
+                } catch (e) {
+                    console.error("AI Grounded Majors Failed:", e);
+                    return "Error: Could not generate College Major list.";
+                }
+            },
             
-            // Settings
-            this.els.settingsBtn.addEventListener('click', () => {
-                this.els.settingsModal.classList.remove('hidden');
-                this.els.hfInput.value = AIModule.token;
-            });
-            this.els.closeSettings.addEventListener('click', () => this.els.settingsModal.classList.add('hidden'));
-            this.els.saveSettings.addEventListener('click', () => {
-                AIModule.saveToken(this.els.hfInput.value);
-                this.els.settingsModal.classList.add('hidden');
-                this.toast("AI TOKEN SAVED");
-            });
+            // NEW: Generate a "Day in the Life" story
+            async generateDayInLife(career, traits) {
+                 if (!this.token) return "Error: AI token not configured.";
+                 
+                 const prompt = `
+Write a short, immersive, second-person narrative (approx 150 words) describing a "Day in the Life" of a **${career}**.
+The user has strong traits in: ${traits}. 
+Tailor the story to highlight how *their* specific traits make this day enjoyable for them. 
+Make it vivid and inspiring. 
+Format using markdown paragraphs.
+`;
+                 try {
+                    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${this.token}`;
+                    const response = await this.fetchWithBackoff(url, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                    });
+                    const result = await response.json();
+                    return result.candidates?.[0]?.content?.parts?.[0]?.text || "Error generating narrative.";
+                 } catch(e) {
+                     console.error("Day in Life Failed", e);
+                     return "Error generating content.";
+                 }
+            },
+            
+            // NEW: Generate Resume Bullet Points
+            async generateResumePoints(career, traits) {
+                if (!this.token) return "Error: AI token not configured.";
+                 
+                 const prompt = `
+Generate 3 powerful, professional resume bullet points for a "Fresher" or Entry-Level candidate applying for a **${career}** role.
+The candidate has no work experience but has strong natural aptitude in: ${traits}.
+Focus on transferable skills and academic projects.
+Format as a markdown bulleted list.
+`;
+                 try {
+                    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${this.token}`;
+                    const response = await this.fetchWithBackoff(url, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                    });
+                    const result = await response.json();
+                    return result.candidates?.[0]?.content?.parts?.[0]?.text || "Error generating resume points.";
+                 } catch(e) {
+                     console.error("Resume Points Failed", e);
+                     return "Error generating content.";
+                 }
+            },
+            
+            // NEW: Generate Audio Pitch (TTS)
+            async generateAudioPitch(name, career, traits) {
+                 if (!this.token) return null;
+                 
+                 const prompt = `
+You are a motivational career coach. Give a short, 2-sentence energetic pitch to ${name} about why they would be a fantastic ${career}, focusing on their ${traits}. Keep it punchy, encouraging and under 20 seconds.
+`;
+                 try {
+                     // Using gemini-2.5-flash-preview-tts
+                     const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${this.token}`;
+                     
+                     const payload = {
+                        contents: [{ parts: [{ text: prompt }] }],
+                        generationConfig: {
+                            responseModalities: ["AUDIO"],
+                            speechConfig: {
+                                voiceConfig: {
+                                    prebuiltVoiceConfig: { voiceName: "Kore" }
+                                }
+                            }
+                        }
+                    };
+                    
+                    const response = await this.fetchWithBackoff(url, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(payload)
+                    });
+                    
+                    const result = await response.json();
+                    const base64Audio = result.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
+                    
+                    if(base64Audio) {
+                        return Utils.pcmToWav(base64Audio, 24000); // 24kHz is default for Gemini TTS
+                    }
+                    return null;
+                 } catch(e) {
+                     console.error("TTS Failed", e);
+                     return null;
+                 }
+            }
+        };
 
-            setTimeout(() => {
-                this.els.loading.classList.add('hidden');
-                this.els.content.classList.remove('hidden');
-                this.els.footer.classList.remove('hidden');
-                document.getElementById('progress-container').classList.remove('hidden');
-            }, 800);
-        },
+        /*
+        =====================
+        MODULE: 3D BACKGROUND
+        =====================
+        */
 
-        toast(msg, isError = false) {
-            if (!this.els || !this.els.msgBox) {
-                const box = document.getElementById('message-box');
-                if (!box) return; 
+        const ThreeBG = {
+            init() {
+                const container = document.getElementById('canvas-container');
+
+                // Ensure THREE is available before proceeding
+                if (!container || typeof THREE === 'undefined') return;
+
+                const scene = new THREE.Scene();
+                scene.fog = new THREE.FogExp2(0x000000, 0.002);
+
+                const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+                const renderer = new THREE.WebGLRenderer({
+                    alpha: true,
+                    antialias: true
+                });
+
+                // Set initial size
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+                container.appendChild(renderer.domElement);
+
+                scene.add(new THREE.AmbientLight(0x404040, 2));
+                const dirLight = new THREE.DirectionalLight(0xffffff, 1);
+                dirLight.position.set(10, 10, 5);
+                scene.add(dirLight);
+
+                // Subtle grid helper
+                const gridHelper = new THREE.GridHelper(100, 50, 0x333333, 0x111111);
+                gridHelper.position.y = -10;
+                scene.add(gridHelper);
+
+                // Floating geometric particles
+                const particleCount = 30;
+                const geometry = new THREE.TetrahedronGeometry(1, 0);
+                const material = new THREE.MeshBasicMaterial({
+                    color: 0x52525b,
+                    wireframe: true,
+                    transparent: true,
+                    opacity: 0.3
+                });
+                const group = new THREE.Group();
+                scene.add(group);
+
+                for (let i = 0; i < particleCount; i++) {
+                    const mesh = new THREE.Mesh(geometry, material);
+                    mesh.position.set((Math.random() - 0.5) * 50, (Math.random() - 0.5) * 50, (Math.random() - 0.5) * 30);
+                    mesh.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, 0);
+                    mesh.userData = {
+                        speed: Math.random() * 0.01 + 0.005
+                    };
+                    group.add(mesh);
+                }
+
+                camera.position.z = 20;
+
+                // Animation loop
+                const animate = () => {
+                    requestAnimationFrame(animate);
+
+                    group.rotation.y += 0.002;
+                    group.children.forEach(m => {
+                        m.rotation.x += m.userData.speed;
+                        m.rotation.y += m.userData.speed;
+                    });
+
+                    renderer.render(scene, camera);
+                };
+
+                // Start animation immediately (since it's an ES module)
+                animate();
+
+                // Handle responsiveness
+                window.addEventListener('resize', () => {
+                    camera.aspect = window.innerWidth / window.innerHeight;
+                    camera.updateProjectionMatrix();
+                    renderer.setSize(window.innerWidth, window.innerHeight);
+                });
+            }
+        };
+
+        /*
+        ===================
+        MODULE: UTILITIES
+        ===================
+        */
+
+        const Utils = {
+            // Sanitize text to safely render AI response (prevents XSS)
+            sanitize: (str) => {
+                const temp = document.createElement('div');
+                temp.textContent = str;
+                return temp.innerHTML;
+            },
+
+            // Add error message below an input field
+            showError: (inputld, msg, show) => {
+                const input = document.getElementById(inputld);
+                if (!input) return;
+
+                let errEl = document.getElementById(inputld + "-error");
+                if (!errEl) {
+                    errEl = document.createElement('p');
+                    errEl.id = inputld + "-error";
+                    errEl.className = "text-red-500 text-[10px] mt-1 font-mono hidden";
+                    input.parentNode.insertBefore(errEl, input.nextSibling);
+                }
+
+                if (show) {
+                    input.classList.add('error');
+                    errEl.textContent = `> ${msg}`;
+                    errEl.classList.remove('hidden');
+                } else {
+                    input.classList.remove('error');
+                    errEl.classList.add('hidden');
+                }
+            },
+            
+            // PCM to WAV Converter for TTS
+            pcmToWav: (pcmBase64, sampleRate = 24000) => {
+                const binaryString = atob(pcmBase64);
+                const len = binaryString.length;
+                const buffer = new ArrayBuffer(len);
+                const view = new Uint8Array(buffer);
+                for (let i = 0; i < len; i++) {
+                    view[i] = binaryString.charCodeAt(i);
+                }
+                const pcmData = new Int16Array(buffer);
+
+                const wavBuffer = new ArrayBuffer(44 + pcmData.length * 2);
+                const viewWav = new DataView(wavBuffer);
+                
+                // Helpers
+                const writeString = (view, offset, string) => {
+                    for (let i = 0; i < string.length; i++) view.setUint8(offset + i, string.charCodeAt(i));
+                };
+
+                // RIFF chunk descriptor
+                writeString(viewWav, 0, 'RIFF');
+                viewWav.setUint32(4, 36 + pcmData.length * 2, true);
+                writeString(viewWav, 8, 'WAVE');
+
+                // fmt sub-chunk
+                writeString(viewWav, 12, 'fmt ');
+                viewWav.setUint32(16, 16, true);
+                viewWav.setUint16(20, 1, true); // PCM
+                viewWav.setUint16(22, 1, true); // Mono
+                viewWav.setUint32(24, sampleRate, true);
+                viewWav.setUint32(28, sampleRate * 2, true);
+                viewWav.setUint16(32, 2, true);
+                viewWav.setUint16(34, 16, true);
+
+                // data sub-chunk
+                writeString(viewWav, 36, 'data');
+                viewWav.setUint32(40, pcmData.length * 2, true);
+
+                // Write PCM data
+                const pcmView = new Int16Array(wavBuffer, 44);
+                pcmView.set(pcmData);
+
+                return new Blob([viewWav], { type: 'audio/wav' });
+            }
+        };
+
+        /*
+        ===========================
+        MODULE: APP DATA & LOGIC
+        ===========================
+        */
+
+        const AppData = {
+            // Core Personality Traits (Aptitude)
+            traits: ['Logic', 'Creativity', 'Communication', 'Detail Orientation', 'Empathy', 'Physical', 'Resilience'],
+
+            // Academic Streams (Class 12)
+            streams: [
+                {
+                    id: 'SciencePCM',
+                    label: 'Science (PCM)',
+                    tags: ['Tech', 'Logic', 'Mech']
+                },
+                {
+                    id: 'SciencePCB',
+                    label: 'Science (PCB)',
+                    tags: ['Bio', 'Nature', 'Research']
+                },
+                {
+                    id: 'Commerce',
+                    label: 'Commerce',
+                    tags: ['Finance', 'Business', 'Math']
+                },
+                {
+                    id: 'Arts',
+                    label: 'Arts & Humanities',
+                    tags: ['Design', 'Media', 'Social']
+                }
+            ],
+
+            // Subjects (Class 10)
+            subjects: [
+                {
+                    id: 'Math',
+                    label: 'Mathematics',
+                    tags: ['Logic', 'Finance', 'Tech']
+                },
+                {
+                    id: 'Science',
+                    label: 'Science',
+                    tags: ['Bio', 'Research', 'Tech']
+                },
+                {
+                    id: 'Social',
+                    label: 'Social Studies',
+                    tags: ['Social', 'Law', 'History']
+                },
+                {
+                    id: 'English',
+                    label: 'English/Literature',
+                    tags: ['Communication', 'Media', 'Writing']
+                },
+                {
+                    id: 'Arts',
+                    label: 'Arts/Craft',
+                    tags: ['Design', 'Creativity']
+                },
+                {
+                    id: 'CompApp',
+                    label: 'Computer Applications',
+                    tags: ['Tech', 'Logic']
+                }
+            ],
+
+            // Interests List
+            interestsList: [
+                {
+                    id: 'Sports',
+                    label: 'Sports & Fitness',
+                    streams: ['All'],
+                    tags: ['Sports', 'Physical']
+                },
+                {
+                    id: 'Gaming',
+                    label: 'Gaming & Esports',
+                    streams: ['All'],
+                    tags: ['Tech', 'Creativity']
+                },
+                {
+                    id: 'Music',
+                    label: 'Music & Audio',
+                    streams: ['All'],
+                    tags: ['Creativity', 'Communication']
+                },
+                {
+                    id: 'SocialService',
+                    label: 'Social Service',
+                    streams: ['All'],
+                    tags: ['Empathy', 'Social']
+                },
+                {
+                    id: 'Management',
+                    label: 'Leadership',
+                    streams: ['All'],
+                    tags: ['Communication', 'Logic']
+                },
+                {
+                    id: 'Coding',
+                    label: 'Coding/Software',
+                    streams: ['SciencePCM'],
+                    tags: ['Tech', 'Logic']
+                },
+                {
+                    id: 'Robotics',
+                    label: 'Robotics',
+                    streams: ['SciencePCM'],
+                    tags: ['Mech', 'Tech']
+                },
+                {
+                    id: 'Space',
+                    label: 'Astronomy',
+                    streams: ['SciencePCM'],
+                    tags: ['Research', 'Logic']
+                },
+                {
+                    id: 'Architecture',
+                    label: 'Design & Build',
+                    streams: ['SciencePCM'],
+                    tags: ['Design', 'Logic']
+                },
+                {
+                    id: 'Medicine',
+                    label: 'Medicine',
+                    streams: ['SciencePCB'],
+                    tags: ['Bio', 'Empathy']
+                },
+                {
+                    id: 'Psychology',
+                    label: 'Psychology',
+                    streams: ['SciencePCB', 'Arts'],
+                    tags: ['Bio', 'Social']
+                },
+                {
+                    id: 'Stocks',
+                    label: 'Stocks/Trading',
+                    streams: ['Commerce'],
+                    tags: ['Finance', 'Logic']
+                },
+                {
+                    id: 'Economics',
+                    label: 'Economics',
+                    streams: ['Commerce', 'Arts'],
+                    tags: ['Finance', 'Research']
+                },
+                {
+                    id: 'Writing',
+                    label: 'Journalism',
+                    streams: ['Arts'],
+                    tags: ['Media', 'Creativity']
+                },
+                {
+                    id: 'Law',
+                    label: 'Law & Debate',
+                    streams: ['Arts', 'Commerce'],
+                    tags: ['Law', 'Logic']
+                },
+                {
+                    id: 'History',
+                    label: 'History',
+                    streams: ['Arts'],
+                    tags: ['Research', 'Communication']
+                },
+                {
+                    id: 'Photography',
+                    label: 'Photography',
+                    streams: ['All'],
+                    tags: ['Design', 'Creativity']
+                }
+            ],
+
+            // Quiz Questions (Mapped to Personality Traits)
+            questionBank: [
+                {
+                    tags: ['Logic'],
+                    text: "I enjoy solving complex puzzles or math problems.",
+                    weights: {
+                        Logic: 5,
+                        Creativity: -1
+                    }
+                },
+                {
+                    tags: ['Logic'],
+                    text: "I like analyzing data to find trends or patterns.",
+                    weights: {
+                        Logic: 5,
+                        'Detail Orientation': 3
+                    }
+                },
+                {
+                    tags: ['Creativity'],
+                    text: "I often have ideas for new inventions or stories.",
+                    weights: {
+                        Creativity: 5,
+                        Logic: 1
+                    }
+                },
+                {
+                    tags: ['Design'],
+                    text: "I notice when a website or poster has bad colors or fonts.",
+                    weights: {
+                        Creativity: 5,
+                        'Detail Orientation': 3
+                    }
+                },
+                {
+                    tags: ['Communication'],
+                    text: "I feel confident speaking in front of a group.",
+                    weights: {
+                        Communication: 5,
+                        Empathy: 1
+                    }
+                },
+                {
+                    tags: ['Social'],
+                    text: "I want a career where I directly help people improve their lives.",
+                    weights: {
+                        Empathy: 5,
+                        Communication: 3
+                    }
+                },
+                {
+                    tags: ['Tech'],
+                    text: "I wonder how the apps on my phone actually work behind the scenes.",
+                    weights: {
+                        Logic: 4,
+                        Creativity: 2
+                    }
+                },
+                {
+                    tags: ['Bio'],
+                    text: "I am not grossed out by blood or biology experiments.",
+                    weights: {
+                        'Detail Orientation': 4,
+                        Empathy: 3
+                    }
+                },
+                {
+                    tags: ['Finance'],
+                    text: "I like the idea of managing money or starting a business.",
+                    weights: {
+                        Logic: 3,
+                        Communication: 4
+                    }
+                },
+                {
+                    tags: ['Law'],
+                    text: "I enjoy debating and proving my point with logic.",
+                    weights: {
+                        Logic: 4,
+                        Communication: 4
+                    }
+                },
+                {
+                    tags: ['Personality'],
+                    text: "I usually take charge in group projects.",
+                    weights: {
+                        Communication: 5,
+                        Logic: 2
+                    }
+                },
+                {
+                    tags: ['Personality'],
+                    text: "I prefer planning everything in detail before starting.",
+                    weights: {
+                        'Detail Orientation': 5,
+                        Creativity: -1
+                    }
+                },
+                {
+                    tags: ['Grit'],
+                    text: "I keep trying even when a problem seems impossible.",
+                    weights: {
+                        Resilience: 5,
+                        Logic: 2
+                    }
+                },
+                {
+                    tags: ['Practical'],
+                    text: "I prefer learning by doing with my hands rather than reading.",
+                    weights: {
+                        Physical: 5,
+                        Logic: 2
+                    }
+                },
+                {
+                    tags: ['Practical'],
+                    text: "I enjoy fixing things that are broken around the house.",
+                    weights: {
+                        Physical: 4,
+                        Logic: 4
+                    }
+                },
+                {
+                    tags: ['Physical'],
+                    text: "I would hate a job where I have to sit at a desk all day.",
+                    weights: {
+                        Physical: 5,
+                        'Detail Orientation': -2
+                    }
+                }
+            ],
+
+            // Stream Recommendations (Class 10 flow)
+            streamDatabase: [
+                {
+                    name: "Science (PCM)",
+                    subject: ["Math", "Science", "CompApp"],
+                    tags: ["Tech", "Logic", "Mech", "Research"],
+                    desc: "Engineering, Architecture, Aviation.",
+                    path: "Select PCM in Class 11"
+                },
+                {
+                    name: "Science (PCB)",
+                    subject: ["Science", "English"],
+                    tags: ["Bio", "Nature", "Medicine", "Research"],
+                    desc: "Medicine, Psychology, Biotech.",
+                    path: "Select PCB in Class 11"
+                },
+                {
+                    name: "Commerce",
+                    subject: ["Math", "Social"],
+                    tags: ["Finance", "Business", "Stocks", "Management"],
+                    desc: "CA, MBA, Economics, Business.",
+                    path: "Select Commerce in Class 11"
+                },
+                {
+                    name: "Arts & Humanities",
+                    subject: ["Social", "English", "Arts"],
+                    tags: ["Media", "Law", "Writing", "Fashion", "Social"],
+                    desc: "Law, Design, Journalism, Civil Services.",
+                    path: "Select Arts in Class 11"
+                }
+            ],
+
+            // Career Recommendations (Class 12 flow)
+            careerDatabase: [
+                {
+                    name: "Software Engineer",
+                    stream: ["SciencePCM"],
+                    tags: ["Tech", "Logic"],
+                    desc: "Building digital systems.",
+                    path: "B.Tech CSE"
+                },
+                {
+                    name: "Doctor (MBBS)",
+                    stream: ["SciencePCB"],
+                    tags: ["Medicine", "Bio"],
+                    desc: "Treating patients.",
+                    path: "NEET -> MBBS"
+                },
+                {
+                    name: "Chartered Accountant",
+                    stream: ["Commerce"],
+                    tags: ["Accounting", "Finance"],
+                    desc: "Financial auditing.",
+                    path: "CA Course"
+                },
+                {
+                    name: "Lawyer",
+                    stream: ["Arts", "Commerce"],
+                    tags: ["Law", "Debate"],
+                    desc: "Legal advocacy.",
+                    path: "BA LLB"
+                },
+                {
+                    name: "Graphic Designer",
+                    stream: ["Arts", "SciencePCM"],
+                    tags: ["Design", "Tech"],
+                    desc: "Visual communication.",
+                    path: "B.Des"
+                },
+                {
+                    name: "Data Scientist",
+                    stream: ["SciencePCM", "Commerce"],
+                    tags: ["Math", "Tech"],
+                    desc: "Analyzing data.",
+                    path: "B.Sc Data Science"
+                },
+                {
+                    name: "Psychologist",
+                    stream: ["SciencePCB", "Arts"],
+                    tags: ["Bio", "Social"],
+                    desc: "Mental health therapy.",
+                    path: "BA/B.Sc Psychology"
+                },
+                {
+                    name: "Entrepreneur",
+                    stream: ["Commerce", "Arts", "SciencePCM"],
+                    tags: ["Business", "Management"],
+                    desc: "Starting ventures.",
+                    path: "BBA / MBA"
+                },
+                {
+                    name: "Professional Athlete",
+                    stream: ["Arts", "SciencePCM", "Commerce"],
+                    tags: ["Sports", "Physical"],
+                    desc: "Competitive sports.",
+                    path: "Sports Academy"
+                },
+                {
+                    name: "Electrician/Technician",
+                    stream: ["SciencePCM", "Arts"],
+                    tags: ["Practical", "Tech"],
+                    desc: "Skilled trade work.",
+                    path: "ITI / Diploma"
+                },
+                {
+                    name: "Event Manager",
+                    stream: ["Commerce", "Arts"],
+                    tags: ["Management", "Social"],
+                    desc: "Organizing large events.",
+                    path: "BBA Event Mgmt"
+                }
+            ],
+
+            state: {
+                step: 0,
+                user: {
+                    name: "",
+                    grade: '10',
+                    stream: "",
+                    subject: "",
+                    marks: "",
+                    interests: [],
+                    customInterest: "" // NEW FIELD
+                },
+                answers: {},
+                activeQuestions: [],
+                recommendations: [],
+                scores: {},
+                aiResponse: null,
+                isRefining: false,
+                refinedInterests: [],
+                quizIndex: 0,
+                aiJobDescription: null,
+                aiInterviewQuestion: null,
+                aiLowTraitPrompt: null, // NEW STATE FIELD
+                aiGroundedMajors: null, // NEW STATE FIELD
+                aiDayInLife: null, // NEW STATE FIELD
+                aiResumePoints: null // NEW STATE FIELD
+            },
+
+            // Helper to get all relevant tags, including those derived from custom interest
+            getUserTags() {
+                const interests = this.state.isRefining ? this.state.refinedInterests : this.state.user.interests;
+                const userTags = new Set(interests.flatMap(intId => this.interestsList.find(i => i.id === intId)?.tags || []));
+
+                const customInterestString = this.state.user.customInterest;
+
+                if (customInterestString.length > 2) {
+                    const lowerCustom = customInterestString.toLowerCase();
+
+                    // Simple keyword mapping for scoring influence
+                    if (lowerCustom.includes('code') || lowerCustom.includes('software') ||
+                        lowerCustom.includes('tech') || lowerCustom.includes('ai')) {
+                        userTags.add('Tech');
+                        userTags.add('Logic');
+                    }
+                    if (lowerCustom.includes('design') || lowerCustom.includes('art') ||
+                        lowerCustom.includes('fashion') || lowerCustom.includes('media')) {
+                        userTags.add('Design');
+                        userTags.add('Creativity');
+                    }
+                    if (lowerCustom.includes('finance') || lowerCustom.includes('business') ||
+                        lowerCustom.includes('stock') || lowerCustom.includes('market')) {
+                        userTags.add('Finance');
+                        userTags.add('Business');
+                    }
+                    if (lowerCustom.includes('history') || lowerCustom.includes('law') ||
+                        lowerCustom.includes('culture') || lowerCustom.includes('social')) {
+                        userTags.add('Social');
+                        userTags.add('Research');
+                    }
+                    if (lowerCustom.includes('physical') || lowerCustom.includes('sports') ||
+                        lowerCustom.includes('outdoor')) {
+                        userTags.add('Physical');
+                    }
+                }
+                return userTags;
+            },
+
+            // Check if the personality scores are too close, suggesting ambiguity.
+            checkAmbiguity() {
+                const rawScores = {};
+                this.traits.forEach(t => rawScores[t] = 0);
+
+                this.state.activeQuestions.forEach(q => {
+                    const val = this.state.answers[q.id] || 3; // Default to neutral (3) if skipped
+
+                    for (const t in q.weights) rawScores[t] += (val - 3) * q.weights[t];
+                });
+
+                const scores = {};
+                this.traits.forEach(t => {
+                    scores[t] = Math.max(0, Math.min(100, 50 + (rawScores[t] * 5)));
+                });
+
+                // Check variance in scores
+                const allScores = Object.values(scores);
+                if (allScores.length === 0) return false;
+                const topTraitScore = Math.max(...allScores);
+                const minTraitScore = Math.min(...allScores);
+
+                // Ambiguity if top score is close to min score, or if too many interests are selected.
+                return (topTraitScore - minTraitScore) < 15 || this.state.user.interests.length > 5;
+            },
+
+            // Dynamically generate quiz questions based on input
+            generateQuiz() {
+                const marks = parseInt(this.state.user.marks) || 0;
+                const targetLength = marks < 60 ? 15 : 10;
+                const userTags = this.getUserTags(); // Use existing user tags
+
+                // 1. Prioritize Questions matching the gathered tags
+                let matchedQuestions = this.questionBank.filter(q =>
+                    q.tags.some(t => userTags.has(t))
+                ).map(q => ({
+                    ...q,
+                    id: `dyn_${Math.random().toString(36).substr(2,9)}`
+                }));
+
+                matchedQuestions.sort(() => 0.5 - Math.random());
+
+                // 2. Include base personality questions
+                const baseQuestions = this.questionBank.filter(q =>
+                    ['Personality', 'Grit', 'Logic', 'Creativity'].includes(q.tags[0])
+                ).map((q, i) => ({
+                    ...q,
+                    id: `base_${i}`
+                }));
+
+                // 3. Include practical questions if marks are low
+                const practicalQuestions = this.questionBank.filter(q =>
+                    ['Practical', 'Physical'].includes(q.tags[0])
+                ).map((q, i) => ({
+                    ...q,
+                    id: `prac_${i}`
+                }));
+
+                let quizSet = [...matchedQuestions, ...baseQuestions];
+
+                if (marks < 60) {
+                    quizSet = [...quizSet, ...practicalQuestions];
+                }
+
+                // De-duplicate by question text
+                quizSet = quizSet.filter((v, i, a) => a.findIndex(t => (t.text === v.text)) === i);
+
+                // Final slice to target length, ensuring a manageable quiz size
+                if (quizSet.length > targetLength) {
+                    quizSet = quizSet.slice(0, targetLength);
+                }
+
+                this.state.activeQuestions = quizSet;
+                this.state.quizIndex = 0;
+            },
+
+            // Calculate final scores and recommendations
+            calculateResults() {
+                const {
+                    answers,
+                    activeQuestions
+                } = this.state;
+
+                // 1. Calculate Trait Scores (0-100)
+                const raw = {};
+                this.traits.forEach(t => raw[t] = 0);
+
+                activeQuestions.forEach(q => {
+                    const val = answers[q.id] || 3; // Default to neutral (3) if skipped
+
+                    // Adjust raw score based on agreement (val-3) multiplied by weight
+                    for (const t in q.weights) raw[t] += (val - 3) * q.weights[t];
+                });
+
+                this.traits.forEach(t => {
+                    // Normalize raw score to a 0-100 range (50 is neutral base)
+                    this.state.scores[t] = Math.max(0, Math.min(100, 50 + (raw[t] * 5)));
+                });
+
+                // 2. Determine Interests and Tags to use
+                const userTags = this.getUserTags();
+
+                // 3. Generate Recommendations
+                if (this.state.user.grade === '10') {
+                    // Recommend streams based on best subject match and interests
+                    const userSubject = this.state.user.subject;
+
+                    const rankedStreams = this.streamDatabase.map(stream => {
+                        let score = 0;
+                        if (stream.subject.includes(userSubject)) score += 40; // High weight for best subject
+
+                        const tagMatch = stream.tags.filter(t => userTags.has(t)).length;
+                        score += tagMatch * 15;
+
+                        // Add randomness for score diversity
+                        return {
+                            ...stream,
+                            finalScore: Math.min(99, 40 + score + Math.floor(Math.random() * 10))
+                        };
+                    });
+
+                    this.state.recommendations = rankedStreams.sort((a, b) => b.finalScore - a.finalScore).slice(0, 2);
+
+                } else {
+                    // Recommend careers based on stream and refined interests
+                    const userStream = this.state.user.stream;
+
+                    let candidates = this.careerDatabase.filter(job => job.stream.includes(userStream));
+
+                    // Introduce vocational/non-traditional careers if marks are low
+                    if (candidates.length < 3 || parseInt(this.state.user.marks) < 60) {
+                        candidates = [...candidates, ...this.careerDatabase.filter(job =>
+                            job.stream.includes("Arts") || job.tags.includes("Practical") ||
+                            job.tags.includes("Sports")
+                        )];
+                    }
+
+                    const ranked = candidates.map(job => {
+                        let score = 0;
+
+                        const tagMatchCount = job.tags.filter(t => userTags.has(t)).length;
+
+                        // High multiplier for interest match after refinement
+                        const multiplier = this.state.isRefining ? 40 : 25;
+                        score += tagMatchCount * multiplier;
+
+                        // Bonus for practical/physical careers if Physical trait is high
+                        if (job.tags.includes("Physical") && this.state.scores['Physical'] > 60) score += 30;
+
+                        return {
+                            ...job,
+                            finalScore: Math.min(99, Math.round(score + 50))
+                        };
+                    });
+
+                    const uniqueRanked = ranked.filter((v, i, a) => a.findIndex(t => (t.name === v.name)) === i);
+                    this.state.recommendations = uniqueRanked.sort((a, b) => b.finalScore - a.finalScore).slice(0, 3);
+                }
+            }
+        };
+
+        /*
+        =====================
+        MODULE: FIREBASE
+        =====================
+        */
+
+        const FirebaseModule = {
+            db: null,
+            userId: null,
+
+            async init() {
+                const configRaw = (typeof __firebase_config !== 'undefined') ?
+                    JSON.parse(__firebase_config) : null;
+
+                if (!configRaw) return;
+
+                try {
+                    const app = initializeApp(configRaw);
+                    this.db = getFirestore(app);
+
+                    const auth = getAuth(app);
+
+                    // Auth setup
+                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                        await signInWithCustomToken(auth, __initial_auth_token);
+                    } else {
+                        await signInAnonymously(auth);
+                    }
+
+                    onAuthStateChanged(auth, (user) => {
+                        if (user) {
+                            this.userId = user.uid;
+                        }
+                    });
+
+                } catch (e) {
+                    console.error("Firebase Init Error:", e);
+                    if (typeof UI !== 'undefined') UI.toast("Cloud sync unavailable", true);
+                }
+            },
+
+            // Save the results to a new document in the user's private collection
+            async save() {
+                if (!this.db || !this.userId) return;
+
+                // IMPORTANT: Use __app_id for security rules
+                const appId = (typeof __app_id !== 'undefined') ? __app_id : 'default-career-app';
+
+                try {
+                    // Path: /artifacts/{appId}/users/{userId}/results/
+                    await setDoc(doc(this.db, `artifacts/${appId}/users/${this.userId}/results`, `result_${Date.now()}`), {
+                        timestamp: Date.now(),
+                        ...AppData.state
+                    });
+
+                    if (typeof UI !== 'undefined') UI.toast("DATA SYNCED TO CLOUD");
+
+                } catch (e) {
+                    console.error("Save Failed:", e);
+                    if (typeof UI !== 'undefined') UI.toast("SYNC FAILED", true);
+                }
+            }
+        };
+
+        /* ===
+        MODULE: UI CONTROLLER
+        =====================
+        */
+
+        const UI = {
+            els: {},
+            steps: [{
+                    id: 0,
+                    render: 'renderIdentity',
+                    validate: 'validateIdentity'
+                },
+                {
+                    id: 1,
+                    render: 'renderBackground',
+                    validate: 'validateBackground'
+                },
+                {
+                    id: 2,
+                    render: 'renderInterests',
+                    validate: 'validateInterests'
+                },
+                {
+                    id: 3,
+                    render: 'renderQuiz',
+                    validate: 'validateQuiz'
+                },
+                {
+                    id: 4,
+                    render: 'renderResults',
+                    validate: () => true
+                }
+            ],
+
+            init() {
+                this.els = {
+                    app: document.getElementById('app'),
+                    content: document.getElementById('content-area'),
+                    progressBar: document.getElementById('progress-bar'),
+                    progressContainer: document.getElementById('progress-container'),
+                    nextBtn: document.getElementById('next-btn'),
+                    backBtn: document.getElementById('back-btn'),
+                    calcBtn: document.getElementById('calculate-btn'),
+                    footer: document.getElementById('nav-footer'),
+                    loading: document.getElementById('initial-loading'),
+                    msgBox: document.getElementById('message-box'),
+                    welcome: document.getElementById('welcome-screen'),
+                    progressText: document.getElementById('progress-text'),
+                    settingsBtn: document.getElementById('settings-btn'),
+                    settingsModal: document.getElementById('settings-modal'),
+                    hfInput: document.getElementById('hf-token-input'),
+                    saveSettings: document.getElementById('save-settings'),
+                    closeSettings: document.getElementById('close-settings')
+                };
+
+                // Event Listeners
+                document.getElementById('start-btn').addEventListener('click', () => {
+                    this.els.welcome.classList.add('hidden'); // Hides welcome screen
+
+                    // Show the main app container (which starts at opacity-0)
+                    this.els.app.classList.remove('hidden');
+
+                    // Start fade in transition
+                    setTimeout(() => this.els.app.classList.remove('opacity-0'), 50);
+
+                    this.gotoStep(0);
+                });
+
+                this.els.nextBtn.addEventListener('click', () => this.nextStep());
+                this.els.backBtn.addEventListener('click', () => this.prevStep());
+                this.els.calcBtn.addEventListener('click', () => this.showResults());
+
+                // Settings Listeners
+                this.els.settingsBtn.addEventListener('click', () => {
+                    this.els.settingsModal.classList.remove('hidden');
+                    this.els.hfInput.value = AlModule.token;
+                });
+
+                this.els.closeSettings.addEventListener('click', () =>
+                    this.els.settingsModal.classList.add('hidden'));
+
+                this.els.saveSettings.addEventListener('click', () => {
+                    AlModule.saveToken(this.els.hfInput.value);
+                    this.els.settingsModal.classList.add('hidden');
+                    this.toast("AI TOKEN SAVED");
+                });
+
+                // Initial UI load routine after the welcome screen is dismissed
+                setTimeout(() => {
+                    // This ensures that if the app is already visible (not initial load), the internal loading is resolved.
+                    this.els.loading.classList.add('hidden');
+                    this.els.content.classList.remove('hidden');
+                    this.els.footer.classList.remove('hidden');
+                    document.getElementById('progress-container').classList.remove('hidden');
+                }, 800);
+            },
+
+            // Display temporary system message
+            toast(msg, isError = false) {
+                const box = this.els.msgBox || document.getElementById('message-box');
+                if (!box) return;
+
                 box.textContent = `> ${msg}`;
                 box.className = `mt-4 p-3 text-xs font-mono text-center transition-all fade-in border ${isError ? 'bg-red-900/20 text-red-400 border-red-900' : 'bg-zinc-900 text-zinc-300 border-zinc-700'}`;
                 box.classList.remove('hidden');
+
                 setTimeout(() => box.classList.add('hidden'), 3000);
-                return;
-            }
-            this.els.msgBox.textContent = `> ${msg}`;
-            this.els.msgBox.className = `mt-4 p-3 text-xs font-mono text-center transition-all fade-in border ${isError ? 'bg-red-900/20 text-red-400 border-red-900' : 'bg-zinc-900 text-zinc-300 border-zinc-700'}`;
-            this.els.msgBox.classList.remove('hidden');
-            setTimeout(() => this.els.msgBox.classList.add('hidden'), 3000);
-        },
+            },
 
-        updateProgress(stepIdx) {
-            const pct = Math.round(((stepIdx + 1) / this.steps.length) * 100);
-            this.els.progressBar.style.width = `${pct}%`;
-            this.els.progressText.textContent = `${pct.toString().padStart(2, '0')}%`;
-        },
+            updateProgress(stepIdx) {
+                const pct = Math.round(((stepIdx + 1) / this.steps.length) * 100);
+                this.els.progressBar.style.width = `${pct}%`;
+                this.els.progressText.textContent = `${pct.toString().padStart(2, '0')}%`;
+            },
 
-        gotoStep(idx) {
-            AppData.state.step = idx;
-            const stepConfig = this.steps[idx] || this.steps[this.steps.length-1];
-            if (idx === 3 && AppData.state.activeQuestions.length === 0) AppData.generateQuiz();
-            this.els.content.innerHTML = '';
-            this.els.content.classList.remove('fade-in');
-            void this.els.content.offsetWidth; 
-            this.els.content.classList.add('fade-in');
-            this[stepConfig.render]();
-            this.updateProgress(idx);
-            this.updateNavState();
-        },
+            // Transition to a new step
+            gotoStep(idx) {
+                AppData.state.step = idx;
+                const stepConfig = this.steps[idx] || this.steps[this.steps.length - 1];
 
-        nextStep() { if (this[this.steps[AppData.state.step].validate]()) this.gotoStep(AppData.state.step + 1); },
-        prevStep() { if (AppData.state.step > 0) this.gotoStep(AppData.state.step - 1); },
-        
-        async showResults() {
-            const needsRefinement = AppData.checkAmbiguity();
-            if (needsRefinement && !AppData.state.isRefining) {
-                this.renderRefinement();
-                return;
-            }
-            AppData.calculateResults();
-            if (AIModule.token) {
-                this.els.loading.classList.remove('hidden');
-                this.els.content.classList.add('hidden');
-                AppData.state.aiResponse = await AIModule.generateInsight(AppData.state);
-                this.els.loading.classList.add('hidden');
-                this.els.content.classList.remove('hidden');
-            }
-            FirebaseModule.save();
-            this.gotoStep(4);
-        },
+                // Generate quiz only once upon reaching step 3
+                if (idx === 3 && AppData.state.activeQuestions.length === 0) AppData.generateQuiz();
 
-        updateNavState() {
-            const s = AppData.state.step;
-            this.els.backBtn.disabled = s === 0;
-            if (s === 3 || s === 4) {
-                this.els.footer.classList.add('hidden');
-            } else {
-                this.els.footer.classList.remove('hidden');
-            }
-            if (s < 3) {
-                this.els.nextBtn.classList.remove('hidden');
-                this.els.calcBtn.classList.add('hidden');
-                this.els.nextBtn.disabled = !this[this.steps[s].validate](true);
-            }
-        },
+                this.els.content.innerHTML = "";
+                this.els.content.classList.remove('fade-in');
 
-        renderIdentity() {
-            this.els.content.innerHTML = `
-                <h2 class="text-2xl font-bold text-white mb-2">IDENTITY</h2>
-                <p class="text-zinc-500 text-sm mb-8 font-mono">WHO ARE YOU?</p>
-                <div class="space-y-6">
-                    <div>
-                        <label class="block text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-2">Full Name</label>
-                        <input id="in-name" type="text" value="${AppData.state.user.name}" class="w-full p-4 input-mono text-sm" placeholder="ENTER NAME">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-2">Current Grade Level</label>
-                        <div class="flex gap-4">
-                            <button class="grade-btn flex-1 p-4 input-mono text-center text-sm uppercase font-bold transition-colors ${AppData.state.user.grade === '10' ? 'bg-white text-black' : 'text-zinc-500'}" data-val="10">Class 10</button>
-                            <button class="grade-btn flex-1 p-4 input-mono text-center text-sm uppercase font-bold transition-colors ${AppData.state.user.grade === '12' ? 'bg-white text-black' : 'text-zinc-500'}" data-val="12">Class 12 / Above</button>
-                        </div>
-                    </div>
-                </div>
-            `;
-            document.getElementById('in-name').addEventListener('input', (e) => {
-                AppData.state.user.name = e.target.value;
-                this.els.nextBtn.disabled = !this.validateIdentity(true);
-            });
-            this.els.content.querySelectorAll('.grade-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    AppData.state.user.grade = btn.dataset.val;
-                    this.renderIdentity();
-                });
-            });
-        },
+                // Force reflow for fade-in animation
+                void this.els.content.offsetWidth;
+                this.els.content.classList.add('fade-in');
 
-        renderBackground() {
-            const is10th = AppData.state.user.grade === '10';
-            let innerHTML = '';
-            if (is10th) {
-                innerHTML = `
-                    <h2 class="text-2xl font-bold text-white mb-2">ACADEMIC PROFILE (10th)</h2>
-                    <p class="text-zinc-500 text-sm mb-6 font-mono">YOUR STRONG POINTS</p>
-                    <div class="mb-6">
-                        <label class="block text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-2">Strongest Subject</label>
-                        <div class="grid grid-cols-2 gap-2">
-                            ${AppData.subjects.map(s => `<button class="subj-opt selection-card p-3 text-left text-xs ${AppData.state.user.subject === s.id ? 'active' : ''}" data-id="${s.id}">${s.label}</button>`).join('')}
-                        </div>
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-2">10th Grade Marks (Predicted %)</label>
-                        <input id="in-marks" type="number" value="${AppData.state.user.marks}" class="w-full p-4 input-mono text-sm" placeholder="0-100">
-                    </div>
-                `;
-            } else {
-                innerHTML = `
-                    <h2 class="text-2xl font-bold text-white mb-2">ACADEMIC STREAM (12th)</h2>
-                    <p class="text-zinc-500 text-sm mb-6 font-mono">WHAT DID YOU STUDY?</p>
-                    <div class="grid grid-cols-1 gap-3 mb-6">
-                        ${AppData.streams.map(s => `<button class="stream-opt selection-card p-4 text-left ${AppData.state.user.stream === s.id ? 'active' : ''}" data-id="${s.id}"><span class="text-sm font-mono uppercase tracking-wider pointer-events-none">${s.label}</span></button>`).join('')}
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-2">12th Grade %</label>
-                        <input id="in-marks" type="number" value="${AppData.state.user.marks}" class="w-full p-4 input-mono text-sm" placeholder="0-100">
-                    </div>
-                `;
-            }
-            this.els.content.innerHTML = innerHTML;
-            if(is10th) {
-                this.els.content.querySelectorAll('.subj-opt').forEach(btn => {
-                    btn.addEventListener('click', () => { AppData.state.user.subject = btn.dataset.id; this.renderBackground(); this.els.nextBtn.disabled = !this.validateBackground(true); });
-                });
-            } else {
-                this.els.content.querySelectorAll('.stream-opt').forEach(btn => {
-                    btn.addEventListener('click', () => { AppData.state.user.stream = btn.dataset.id; this.renderBackground(); this.els.nextBtn.disabled = !this.validateBackground(true); });
-                });
-            }
-            document.getElementById('in-marks').addEventListener('input', (e) => { AppData.state.user.marks = e.target.value; this.els.nextBtn.disabled = !this.validateBackground(true); });
-        },
+                this[stepConfig.render]();
+                this.updateProgress(idx);
+                this.updateNavState();
+            },
 
-        renderInterests() {
-            const currentStream = AppData.state.user.stream;
-            const is10th = AppData.state.user.grade === '10';
-            const filteredInterests = AppData.interestsList.filter(i => is10th || i.streams.includes('All') || i.streams.includes(currentStream));
-            const html = filteredInterests.map(opt => {
-                const active = AppData.state.user.interests.includes(opt.id);
-                return `<button class="selection-card p-4 text-left h-full flex flex-col justify-center ${active ? 'active' : ''}" data-id="${opt.id}"><span class="text-xs md:text-sm font-mono uppercase tracking-wider block pointer-events-none">${opt.label}</span></button>`;
-            }).join('');
-            this.els.content.innerHTML = `<h2 class="text-2xl font-bold text-white mb-2">INTERESTS</h2><p class="text-zinc-500 text-sm mb-8 font-mono">WHAT DO YOU LOVE?</p><div class="grid grid-cols-2 gap-4 max-h-[300px] overflow-y-auto pr-2">${html}</div>`;
-            this.els.content.querySelectorAll('.selection-card').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const id = btn.dataset.id;
-                    if (AppData.state.user.interests.includes(id)) AppData.state.user.interests = AppData.state.user.interests.filter(t => t !== id);
-                    else AppData.state.user.interests.push(id);
-                    this.renderInterests();
-                    this.els.nextBtn.disabled = !this.validateInterests(true);
-                });
-            });
-        },
+            nextStep() {
+                if (this[this.steps[AppData.state.step].validate]())
+                    this.gotoStep(AppData.state.step + 1);
+            },
 
-        renderQuiz() {
-            const totalQ = AppData.state.activeQuestions.length;
-            const idx = AppData.state.quizIndex;
-            
-            if (idx >= totalQ) {
-                this.showResults();
-                return;
-            }
+            prevStep() {
+                if (AppData.state.step > 0) this.gotoStep(AppData.state.step - 1);
+            },
 
-            const q = AppData.state.activeQuestions[idx];
-            const html = `
-                <div class="flex-grow flex flex-col justify-center h-full slide-in-right">
-                    <div class="mb-8">
-                        <p class="text-xs font-mono text-zinc-500 mb-2 uppercase tracking-widest">Question ${idx + 1} / ${totalQ}</p>
-                        <h3 class="text-xl md:text-2xl font-bold text-white leading-snug">"${q.text}"</h3>
-                    </div>
-                    <div class="space-y-3">
-                        ${[1,2,3,4,5].map(opt => {
-                            const labels = ['Strongly Disagree', 'Disagree', 'Neutral', 'Agree', 'Strongly Agree'];
-                            return `
-                            <button class="quiz-opt w-full p-4 border border-zinc-800 text-left transition-all hover:bg-white hover:text-black hover:border-white hover:shadow-[0_0_20px_rgba(255,255,255,0.2)] flex justify-between items-center group"
-                                data-val="${opt}">
-                                <span class="text-sm font-mono uppercase tracking-wide">${labels[opt-1]}</span>
-                                <span class="text-xs text-zinc-600 group-hover:text-black opacity-0 group-hover:opacity-100 transition-opacity">SELECT →</span>
-                            </button>
-                            `;
-                        }).join('')}
-                    </div>
-                    <div class="mt-8 flex justify-between items-center">
-                        <button id="quiz-back" class="text-xs text-zinc-500 hover:text-white uppercase tracking-widest disabled:opacity-30" ${idx===0?'disabled':''}>← Previous</button>
-                    </div>
-                </div>
-            `;
-            
-            this.els.content.innerHTML = html;
+            async showResults() {
+                const needsRefinement = AppData.checkAmbiguity();
 
-            // Auto-advance logic
-            this.els.content.querySelectorAll('.quiz-opt').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const val = parseInt(btn.dataset.val);
-                    AppData.state.answers[q.id] = val;
-                    
-                    // Visual feedback
-                    btn.classList.add('bg-white', 'text-black');
-                    
-                    setTimeout(() => {
-                        AppData.state.quizIndex++;
-                        this.els.content.firstElementChild.classList.add('slide-out-left'); // Animate out
-                        setTimeout(() => this.renderQuiz(), 200); // Wait for anim then render next
-                    }, 250);
-                });
-            });
-
-            document.getElementById('quiz-back').addEventListener('click', () => {
-                if(AppData.state.quizIndex > 0) {
-                    AppData.state.quizIndex--;
-                    this.renderQuiz();
-                } else {
-                    // Go back to interests
-                    this.gotoStep(2);
+                if (needsRefinement && !AppData.state.isRefining && AppData.state.user.interests.length > 2) {
+                    this.renderRefinement();
+                    return;
                 }
-            });
-        },
 
-        renderRefinement() {
-            const selectedIds = AppData.state.user.interests;
-            const options = AppData.interestsList.filter(i => selectedIds.includes(i.id));
-            const html = options.map(opt => {
-                const isSelected = AppData.state.refinedInterests.includes(opt.id);
-                return `<button class="selection-card p-4 text-left h-full flex flex-col justify-center ${isSelected ? 'active' : ''}" data-id="${opt.id}"><span class="text-xs md:text-sm font-mono uppercase tracking-wider block pointer-events-none">${opt.label}</span></button>`;
-            }).join('');
+                AppData.calculateResults();
 
-            this.els.content.innerHTML = `
-                <div class="border border-red-500/50 bg-red-500/10 p-4 mb-6">
-                    <h2 class="text-xl font-bold text-white mb-1">CLARIFICATION REQUIRED</h2>
-                    <p class="text-red-200 text-xs font-mono">AMBIGUOUS PROFILE DETECTED. WE NEED MORE PRECISION.</p>
-                </div>
-                <p class="text-zinc-400 text-sm mb-6">Select exactly <strong>TWO</strong> favorites from below:</p>
-                <div class="grid grid-cols-1 gap-3">${html}</div>
-                <div class="mt-8 text-right">
-                    <button id="submit-refinement" class="btn-mono btn-mono-primary px-8 py-3 rounded-none text-xs font-bold uppercase tracking-widest" disabled>Analyze Final Path</button>
-                </div>
-            `;
-            const submitBtn = document.getElementById('submit-refinement');
-            this.els.content.querySelectorAll('.selection-card').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const id = btn.dataset.id;
-                    if (AppData.state.refinedInterests.includes(id)) {
-                        AppData.state.refinedInterests = AppData.state.refinedInterests.filter(t => t !== id);
+                if (AlModule.token) {
+                    this.els.loading.classList.remove('hidden');
+                    this.els.content.classList.add('hidden');
+
+                    AppData.state.aiResponse = await AlModule.generateInsight(AppData.state);
+
+                    this.els.loading.classList.add('hidden');
+                    this.els.content.classList.remove('hidden');
+                }
+
+                // Save data to cloud before showing final results
+                FirebaseModule.save();
+                this.gotoStep(4);
+            },
+
+            // Update navigation button visibility/state
+            updateNavState() {
+                const s = AppData.state.step;
+
+                this.els.backBtn.disabled = s === 0;
+
+                // Show Next/Calculate button appropriately
+                if (s < 3) {
+                    this.els.footer.classList.remove('hidden');
+                    this.els.nextBtn.classList.remove('hidden');
+                    this.els.calcBtn.classList.add('hidden');
+                    // Re-validate the current step to set the disabled state
+                    this.els.nextBtn.disabled = !this[this.steps[s].validate]();
+                } else if (s === 3) {
+                    this.els.footer.classList.remove('hidden');
+                    this.els.nextBtn.classList.add('hidden');
+                    this.els.calcBtn.classList.remove('hidden');
+                } else {
+                    // Hide footer for results step 
+                    this.els.footer.classList.add('hidden');
+                }
+
+            },
+
+            // --- Step 0: Identity
+            renderIdentity() {
+                this.els.content.innerHTML = `
+                    <h2 class="text-2xl font-bold text-white mb-2">IDENTITY</h2>
+                    <p class="text-zinc-500 text-sm mb-8 font-mono">WHO ARE YOU?</p>
+
+                    <div class="space-y-6">
+                        <div>
+                            <label class="block text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-2">Full Name</label>
+                            <input id="in-name" type="text" value="${AppData.state.user.name}" class="w-full p-4 input-mono text-sm rounded-none" placeholder="ENTER NAME">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-2">Current Grade Level</label>
+                            <div class="flex gap-4">
+                                <button class="grade-btn flex-1 p-4 input-mono text-center text-sm uppercase font-bold transition-colors rounded-none ${AppData.state.user.grade === '10' ? 'active' : 'text-zinc-500'}" data-val="10">Class 10</button>
+                                <button class="grade-btn flex-1 p-4 input-mono text-center text-sm uppercase font-bold transition-colors rounded-none ${AppData.state.user.grade === '12' ? 'active' : 'text-zinc-500'}" data-val="12">Class 12 / Above</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                document.getElementById('in-name').addEventListener('input', (e) => {
+                    AppData.state.user.name = e.target.value;
+                    this.els.nextBtn.disabled = !this.validateIdentity();
+                });
+
+                this.els.content.querySelectorAll('.grade-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        AppData.state.user.grade = btn.dataset.val;
+                        this.renderIdentity();
+                    });
+                });
+            },
+
+            // --- Step 1: Background (Subject/Stream & Marks)
+            renderBackground() {
+                const is10th = AppData.state.user.grade === '10';
+                let innerHTML = "";
+
+                if (is10th) {
+                    innerHTML = `
+                        <h2 class="text-2xl font-bold text-white mb-2">ACADEMIC PROFILE (10th)</h2>
+                        <p class="text-zinc-500 text-sm mb-6 font-mono">YOUR STRONG POINTS</p>
+                        <div class="mb-6">
+                            <label class="block text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-2">Strongest Subject</label>
+                            <div class="grid grid-cols-2 gap-2">
+                                ${AppData.subjects.map(s => `<button class="subj-opt selection-card p-3 text-left text-xs rounded-none ${AppData.state.user.subject === s.id ? 'active' : ''}" data-id="${s.id}"><span class="pointer-events-none">${s.label}</span></button>`).join('')}
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-2">10th Grade Marks (Predicted %)</label>
+                            <input id="in-marks" type="number" value="${AppData.state.user.marks}" class="w-full p-4 input-mono text-sm rounded-none" placeholder="0-100">
+                        </div>
+                    `;
+                } else {
+                    innerHTML = `
+                        <h2 class="text-2xl font-bold text-white mb-2">ACADEMIC STREAM (12th)</h2>
+                        <p class="text-zinc-500 text-sm mb-6 font-mono">WHAT DID YOU STUDY?</p>
+                        <div class="grid grid-cols-1 gap-3 mb-6">
+                            ${AppData.streams.map(s => `<button class="stream-opt selection-card p-4 text-left rounded-none ${AppData.state.user.stream === s.id ? 'active' : ''}" data-id="${s.id}"><span class="text-sm font-mono uppercase tracking-wider pointer-events-none">${s.label}</span></button>`).join('')}
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-2">12th Grade %</label>
+                            <input id="in-marks" type="number" value="${AppData.state.user.marks}" class="w-full p-4 input-mono text-sm rounded-none" placeholder="0-100">
+                        </div>
+                    `;
+                }
+
+                this.els.content.innerHTML = innerHTML;
+
+                // Subject/Stream selection handlers
+                if (is10th) {
+                    this.els.content.querySelectorAll('.subj-opt').forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            AppData.state.user.subject = btn.dataset.id;
+                            this.renderBackground();
+                            this.els.nextBtn.disabled = !this.validateBackground();
+                        });
+                    });
+                } else {
+                    this.els.content.querySelectorAll('.stream-opt').forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            AppData.state.user.stream = btn.dataset.id;
+                            this.renderBackground();
+                            this.els.nextBtn.disabled = !this.validateBackground();
+                        });
+                    });
+                }
+
+                // Marks input handler
+                document.getElementById('in-marks')?.addEventListener('input', (e) => {
+                    let val = e.target.value;
+
+                    if (val < 0 || val > 100) {
+                        Utils.showError('in-marks', 'Marks must be between 0 and 100.', true);
                     } else {
-                        if(AppData.state.refinedInterests.length < 2) AppData.state.refinedInterests.push(id);
+                        Utils.showError('in-marks', "", false);
+                        AppData.state.user.marks = val;
                     }
-                    btn.classList.toggle('active', AppData.state.refinedInterests.includes(id));
-                    submitBtn.disabled = AppData.state.refinedInterests.length !== 2;
+                    this.els.nextBtn.disabled = !this.validateBackground();
                 });
-            });
-            submitBtn.addEventListener('click', () => {
-                AppData.state.isRefining = true;
-                this.showResults();
-            });
-            this.els.footer.classList.add('hidden');
-        },
 
-        renderResults() {
-            const recs = AppData.state.recommendations;
-            const is10th = AppData.state.user.grade === '10';
-            const subHeader = is10th ? "RECOMMENDED STREAMS (CLASS 11)" : "CAREER RECOMMENDATIONS";
+                this.els.nextBtn.disabled = !this.validateBackground();
+            },
 
-            const cardsHtml = recs.map((rec, i) => `
-                <div class="p-6 border border-zinc-800 bg-zinc-900/30 mb-4 hover:bg-zinc-900 transition-colors group">
-                    <div class="flex justify-between items-start mb-2">
-                        <h3 class="text-lg font-bold text-white group-hover:underline decoration-1 underline-offset-4">#${i+1} ${rec.name}</h3>
-                        <span class="px-2 py-1 bg-white text-black text-[10px] font-bold font-mono">${rec.finalScore}% MATCH</span>
+            // --- Step 2: Interests
+            renderInterests() {
+                const currentStream = AppData.state.user.stream;
+                const is10th = AppData.state.user.grade === '10';
+
+                // Filter interests based on stream selected in Class 12 flow
+                const filteredInterests = AppData.interestsList.filter(i => is10th || i.streams.includes('All') || i.streams.includes(currentStream));
+
+                const html = filteredInterests.map(opt => {
+                    const active = AppData.state.user.interests.includes(opt.id);
+                    return `<button class="selection-card p-4 text-left h-full flex flex-col justify-center rounded-none ${active ? 'active' : ''}" data-id="${opt.id}"><span class="text-xs md:text-sm font-mono uppercase tracking-wider block pointer-events-none">${opt.label}</span></button>`;
+                }).join('');
+
+                this.els.content.innerHTML = `
+                    <h2 class="text-2xl font-bold text-white mb-2">INTERESTS</h2>
+                    <p class="text-zinc-500 text-sm mb-8 font-mono">WHAT DO YOU LOVE? (SELECT 1-5)</p>
+
+                    <div class="grid grid-cols-2 gap-4 max-h-[250px] overflow-y-auto pr-2 mb-6">${html}</div>
+
+                    <!-- Custom Interest Input -->
+                    <div class="mt-4">
+                        <label class="block text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-2">OTHER INTEREST (OPTIONAL)</label>
+                        <input id="in-custom-interest" type="text" value="${AppData.state.user.customInterest}" class="w-full p-4 input-mono text-sm rounded-none" placeholder="e.g., Quantum Computing, Fashion Blogging, Ancient History">
+                        <p id="in-custom-interest-error" class="text-red-500 text-[10px] mt-1 font-mono hidden">> Custom interest must be at least 3 characters.</p>
                     </div>
-                    <p class="text-xs text-zinc-400 mb-4 leading-relaxed font-light">${rec.desc}</p>
-                    <div class="text-[10px] text-zinc-500 border-t border-zinc-800 pt-3 font-mono uppercase"><strong class="text-zinc-300">PATH ></strong> ${rec.path}</div>
-                </div>
-            `).join('');
+                `;
 
-            let aiHtml = '';
-            if (AppData.state.aiResponse) {
-                aiHtml = `<div class="md:col-span-3 p-6 border border-white bg-white/10 relative overflow-hidden mb-4"><div class="absolute top-0 right-0 p-2 text-[10px] bg-white text-black font-bold font-mono">AI GENERATED INSIGHT</div><div class="ai-response text-sm text-zinc-200 leading-relaxed font-light">${Utils.sanitize(AppData.state.aiResponse).replace(/\n/g, '<br>')}</div></div>`;
-            } else if (!AIModule.token) {
-                aiHtml = `<div class="md:col-span-3 p-4 border border-zinc-800 border-dashed text-center mb-4"><p class="text-zinc-500 text-xs font-mono">SMART AI DISABLED. CONFIGURE TOKEN IN SETTINGS.</p></div>`;
-            }
+                // Custom Interest Listener
+                document.getElementById('in-custom-interest').addEventListener('input', (e) => {
+                    AppData.state.user.customInterest = e.target.value.trim();
 
-            // Add Roadmap Button
-            const roadmapBtnHtml = AIModule.token ? `
-                <div class="mt-8 text-center space-x-4">
-                    <button id="generate-roadmap-btn" class="btn-mono btn-mono-primary px-6 py-3 rounded-none text-xs font-bold uppercase tracking-widest">✨ Generate Roadmap</button>
-                    <button id="restart-btn" class="text-xs text-zinc-500 hover:text-white hover:underline transition-colors font-mono uppercase tracking-widest">Reset System</button>
-                </div>
-            ` : `
-                <div class="mt-8 text-center">
-                    <button id="restart-btn" class="text-xs text-zinc-500 hover:text-white hover:underline transition-colors font-mono uppercase tracking-widest">Reset System</button>
-                </div>
-            `;
+                    const isValid = AppData.state.user.customInterest.length === 0 ||
+                        AppData.state.user.customInterest.length >= 3;
 
-            this.els.content.innerHTML = `
-                <div class="text-center mb-8">
-                    <h2 class="text-3xl font-bold text-white mb-1">ANALYSIS COMPLETE</h2>
-                    <p class="text-zinc-500 text-xs font-mono uppercase">Blueprint for ${AppData.state.user.name}</p>
-                </div>
-                <div class="grid md:grid-cols-3 gap-8 h-full">
-                    ${aiHtml}
-                    <div class="md:col-span-1 p-6 border border-zinc-800 bg-black/20">
-                        <h3 class="text-xs font-bold text-white uppercase tracking-widest mb-6 pb-2 border-b border-zinc-800">ACADEMIC DATA</h3>
-                        <p class="text-sm text-zinc-300 font-mono mb-2">GRADE: ${is10th ? '10th' : '12th/College'}</p>
-                        <p class="text-sm text-zinc-300 font-mono mb-2">MARKS: ${AppData.state.user.marks}%</p>
-                        <p class="text-sm text-zinc-300 font-mono">INTERESTS: ${AppData.state.user.interests.length}</p>
-                    </div>
-                    <div class="md:col-span-2">
-                        <h3 class="text-xs font-bold text-white uppercase tracking-widest mb-4 pb-2 border-b border-zinc-800">${subHeader}</h3>
-                        <div class="overflow-y-auto max-h-[450px] pr-1">${cardsHtml}</div>
-                    </div>
-                </div>
-                
-                <div id="roadmap-container" class="hidden mt-8 p-6 border border-zinc-700 bg-zinc-900/50">
-                    <h3 class="text-lg font-bold text-white mb-4">LEARNING ROADMAP</h3>
-                    <div id="roadmap-content" class="text-sm text-zinc-300 font-mono leading-relaxed whitespace-pre-line"></div>
-                </div>
-
-                ${roadmapBtnHtml}
-            `;
-            
-            document.getElementById('restart-btn').addEventListener('click', () => location.reload());
-            
-            if (AIModule.token) {
-                document.getElementById('generate-roadmap-btn').addEventListener('click', async (e) => {
-                    const btn = e.target;
-                    btn.disabled = true;
-                    btn.textContent = "Generating...";
-                    
-                    const roadmap = await AIModule.generateRoadmap(AppData.state);
-                    
-                    document.getElementById('roadmap-container').classList.remove('hidden');
-                    document.getElementById('roadmap-content').textContent = roadmap;
-                    btn.textContent = "Roadmap Generated";
+                    Utils.showError('in-custom-interest', 'Custom interest must be at least 3 characters.', !isValid && AppData.state.user.customInterest.length > 0);
+                    this.els.nextBtn.disabled = !this.validateInterests();
                 });
-            }
-        },
 
-        validateIdentity() { return AppData.state.user.name.length > 2; },
-        validateBackground() {
-            const is10th = AppData.state.user.grade === '10';
-            const hasMarks = AppData.state.user.marks !== '' && !isNaN(AppData.state.user.marks);
-            if (is10th) return hasMarks && AppData.state.user.subject !== '';
-            else return hasMarks && AppData.state.user.stream !== '';
-        },
-        validateInterests() { return AppData.state.user.interests.length > 0; },
-        // Quiz validation is handled internally by the flow now
-        validateQuiz() { return true; } 
-    };
+                this.els.nextBtn.disabled = !this.validateInterests();
 
-    ThreeBG.init();
-    UI.init();
-    FirebaseModule.init();
-</script>
+                this.els.content.querySelectorAll('.selection-card').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const id = btn.dataset.id;
+                        const index = AppData.state.user.interests.indexOf(id);
+
+                        if (index > -1) AppData.state.user.interests.splice(index, 1);
+                        else if (AppData.state.user.interests.length < 5) AppData.state.user.interests.push(id);
+                        else this.toast("Maximum 5 interests selected.", true);
+
+                        // Re-render to show active state
+                        this.renderInterests();
+                        this.els.nextBtn.disabled = !this.validateInterests();
+                    });
+                });
+            },
+
+            // --- Step 3: Aptitude Quiz
+            renderQuiz() {
+                const totalQ = AppData.state.activeQuestions.length;
+                const idx = AppData.state.quizIndex;
+
+                // If quiz is complete, proceed to results
+                if (idx >= totalQ) {
+                    this.showResults();
+                    return;
+                }
+
+                const q = AppData.state.activeQuestions[idx];
+
+                // Render current question with animation
+                const html = `
+                    <div class="flex-grow flex flex-col justify-center h-full slide-in-right">
+                        <div class="mb-8">
+                            <p class="text-xs font-mono text-zinc-500 mb-2 uppercase tracking-widest">Question ${idx + 1}/${totalQ}</p>
+                            <h3 class="text-xl md:text-2xl font-bold text-white leading-snug">"${q.text}"</h3>
+                        </div>
+
+                        <div class="space-y-3">
+                            ${[1, 2, 3, 4, 5].map(opt => {
+                                const labels = ['Strongly Disagree', 'Disagree', 'Neutral', 'Agree', 'Strongly Agree'];
+                                return `
+                                    <button class="quiz-opt w-full p-4 border border-zinc-800 text-left transition-all hover:bg-white hover:text-black hover:border-white hover:shadow-[0_0_20px_rgba(255,255,255,0.2)] flex justify-between items-center group rounded-none" data-val="${opt}">
+                                        <span class="text-sm font-mono uppercase tracking-wide pointer-events-none">${labels[opt - 1]}</span>
+                                        <span class="text-xs text-zinc-600 group-hover:text-black opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">SELECT</span>
+                                    </button>
+                                `;
+                            }).join('')}
+                        </div>
+
+                        <div class="mt-8 flex justify-between items-center">
+                            <button id="quiz-back" class="text-xs text-zinc-500 hover:text-white uppercase tracking-widest disabled:opacity-30" ${idx === 0 ? 'disabled' : ''}> Previous</button>
+                            <button id="quiz-skip" class="text-xs text-zinc-500 hover:text-white uppercase tracking-widest">Skip</button>
+                        </div>
+                    </div>
+                `;
+
+                this.els.content.innerHTML = html;
+
+                // Auto-advance logic on button click
+                this.els.content.querySelectorAll('.quiz-opt').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const val = parseInt(e.currentTarget.dataset.val);
+                        AppData.state.answers[q.id] = val;
+                        this.handleQuizAdvance(e.currentTarget);
+                    });
+                });
+
+                // Skip logic
+                document.getElementById('quiz-skip').addEventListener('click', (e) => {
+                    // Answer remains default (3/Neutral) if skipped
+                    AppData.state.answers[q.id] = AppData.state.answers[q.id] || 3;
+                    this.handleQuizAdvance(e.currentTarget);
+                });
+
+                // Back button logic
+                document.getElementById('quiz-back').addEventListener('click', () => {
+                    if (AppData.state.quizIndex > 0) {
+                        AppData.state.quizIndex--;
+                        this.renderQuiz();
+                    } else {
+                        // If on first question, go back to interests step (3->2)
+                        this.gotoStep(2);
+                    }
+                });
+            },
+            
+            handleQuizAdvance(el) {
+                // Visual feedback only for selection
+                if (el.classList.contains('quiz-opt')) {
+                    el.classList.add('bg-white', 'text-black');
+                }
+
+                setTimeout(() => {
+                    AppData.state.quizIndex++;
+                    // Animate out the current content
+                    this.els.content.firstElementChild.classList.add('slide-out-left');
+                    setTimeout(() => this.renderQuiz(), 200); // Wait for anim then render next
+                }, 250);
+            },
+
+            // --- Step 3b: Refinement (Only triggered if ambiguity is high)
+            renderRefinement() {
+                const selectedIds = AppData.state.user.interests;
+                const options = AppData.interestsList.filter(i => selectedIds.includes(i.id));
+
+                // Reset refined interests if this is the first time entering refinement
+                if (!AppData.state.isRefining) {
+                    AppData.state.refinedInterests = [];
+                }
+
+                const html = options.map(opt => {
+                    const isSelected = AppData.state.refinedInterests.includes(opt.id);
+                    return `<button class="selection-card p-4 text-left h-full flex flex-col justify-center rounded-none ${isSelected ? 'active' : ''}" data-id="${opt.id}"><span class="text-xs md:text-sm font-mono uppercase tracking-wider block pointer-events-none">${opt.label}</span></button>`;
+                }).join('');
+
+                this.els.content.innerHTML = `
+                    <div class="border border-red-500/50 bg-red-500/10 p-4 mb-6 rounded-lg">
+                        <h2 class="text-xl font-bold text-white mb-1">CLARIFICATION REQUIRED</h2>
+                        <p class="text-red-200 text-xs font-mono">AMBIGUOUS PROFILE DETECTED. WE NEED MORE PRECISION.</p>
+                    </div>
+                    <p class="text-zinc-400 text-sm mb-6">Select exactly <strong>TWO</strong> favorite interests from your initial list to narrow the focus:</p>
+                    <div class="grid grid-cols-1 gap-3 max-h-[300px] overflow-y-auto pr-2">${html}</div>
+                    <div class="mt-8 flex justify-between items-center">
+                        <button id="refinement-back" class="btn-mono btn-mono-secondary px-6 py-3 rounded-none text-xs font-bold uppercase tracking-widest">Back</button>
+                        <button id="submit-refinement" class="btn-mono btn-mono-primary px-8 py-3 rounded-none text-xs font-bold uppercase tracking-widest" ${AppData.state.refinedInterests.length !== 2 ? 'disabled' : ''}>Analyze Final Path</button>
+                    </div>
+                `;
+
+                const submitBtn = document.getElementById('submit-refinement');
+
+                this.els.content.querySelectorAll('.selection-card').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const id = e.currentTarget.dataset.id;
+                        const index = AppData.state.refinedInterests.indexOf(id);
+
+                        if (index > -1) {
+                            AppData.state.refinedInterests.splice(index, 1);
+                        } else {
+                            // Enforce maximum of 2 selections
+                            if (AppData.state.refinedInterests.length < 2) AppData.state.refinedInterests.push(id);
+                            else this.toast("Maximum two favorites selected.", true);
+                        }
+
+                        // Update active state and button disability
+                        e.currentTarget.classList.toggle('active', AppData.state.refinedInterests.includes(id));
+                        submitBtn.disabled = AppData.state.refinedInterests.length !== 2;
+                    });
+                });
+
+                document.getElementById('refinement-back').addEventListener('click', () => {
+                    AppData.state.isRefining = false; // Reset refinement flag
+                    this.gotoStep(2); // Go back to the interests step
+                });
+
+                submitBtn.addEventListener('click', () => {
+                    AppData.state.isRefining = true;
+                    this.showResults();
+                });
+
+                // Hide regular navigation controls for this special screen
+                this.els.footer.classList.add('hidden');
+            },
+
+            // --- Step 4: Results (ENHANCED) -
+            renderResults() {
+                const recs = AppData.state.recommendations;
+                const is10th = AppData.state.user.grade === '10';
+
+                const subHeader = is10th ? "RECOMMENDED STREAMS (CLASS 11)" : "CAREER RECOMMENDATIONS";
+
+                // Get lowest trait for the improvement prompt
+                const allScores = Object.entries(AppData.state.scores).sort((a, b) => a[1] - b[1]);
+                const lowTrait = allScores[0]?.[0] || 'Detail Orientation'; // Fallback
+
+                // Get highest ranked career/stream title
+                const topRecommendation = recs[0]?.name || "a specialized field";
+
+                // Get top trait for the interview question
+                const topTrait = Object.entries(AppData.state.scores).sort((a, b) => b[1] - a[1])[0]?.[0] || 'Resilience';
+                const topTraitsList = Object.entries(AppData.state.scores).sort((a, b) => b[1] - a[1]).slice(0, 3).map(x => x[0]).join(', ');
+
+                const cardsHtml = recs.map((rec, i) =>
+                    `<div class="p-6 border border-zinc-800 bg-zinc-900/30 mb-4 hover:bg-zinc-900 transition-colors group rounded-lg">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-lg font-bold text-white group-hover:underline decoration-1 underline-offset-4">#${i + 1} ${rec.name}</h3>
+                            <span class="px-2 py-1 bg-white text-black text-[10px] font-bold font-mono rounded-full">
+                                ${rec.finalScore}% MATCH</span>
+                        </div>
+                        <p class="text-xs text-zinc-400 mb-4 leading-relaxed font-light">${rec.desc}</p>
+                        <div class="text-[10px] text-zinc-500 border-t border-zinc-800 pt-3 font-mono uppercase"><strong class="text-zinc-300">PATH ></strong> ${rec.path}</div>
+                    </div>`
+                ).join('');
+
+                let aiHtml = "";
+
+                if (AppData.state.aiResponse) {
+                    // Display AI insight in a special block
+                    aiHtml = `
+                        <div class="md:col-span-3 p-6 border border-white bg-white/10 relative overflow-hidden mb-4 rounded-lg">
+                            <div class="absolute top-0 right-0 p-2 text-[10px] bg-white text-black font-bold font-mono rounded-bl-lg">AI GENERATED INSIGHT</div>
+                            <div class="ai-response text-sm text-zinc-200 leading-relaxed font-light mt-4">
+                                ${AppData.state.aiResponse.replace(/\n/g, '<br>')}
+                            </div>
+                        </div>
+                    `;
+                } else if (!AlModule.token) {
+                    aiHtml = `
+                        <div class="md:col-span-3 p-4 border border-zinc-800 border-dashed text-center mb-4 rounded-lg">
+                            <p class="text-zinc-500 text-xs font-mono">SMART AI DISABLED. CONFIGURE KEY IN SETTINGS.</p>
+                        </div>
+                    `;
+                }
+
+                // Determine content for the dynamic AI output panel
+                let dynamicTitle = "AI EXPLORATION";
+                let dynamicContent = "Select an option below to generate detailed, personalized AI content.";
+                let isHidden = true;
+                let showAudioPlayer = false;
+
+                if (AppData.state.aiRoadmap) {
+                    dynamicTitle = "LEARNING ROADMAP";
+                    dynamicContent = AppData.state.aiRoadmap;
+                    isHidden = false;
+                } else if (AppData.state.aiJobDescription) {
+                    dynamicTitle = `JOB DESCRIPTION: ${topRecommendation}`;
+                    dynamicContent = AppData.state.aiJobDescription;
+                    isHidden = false;
+                } else if (AppData.state.aiInterviewQuestion) {
+                    dynamicTitle = `INTERVIEW QUESTION (Testing ${topTrait})`;
+                    dynamicContent = AppData.state.aiInterviewQuestion;
+                    isHidden = false;
+                } else if (AppData.state.aiLowTraitPrompt) {
+                    dynamicTitle = `SELF-REFLECTION: Improving ${lowTrait}`;
+                    dynamicContent = AppData.state.aiLowTraitPrompt;
+                    isHidden = false;
+                } else if (AppData.state.aiGroundedMajors) {
+                    dynamicTitle = `GROUNDED MAJORS FOR: ${topRecommendation}`;
+                    dynamicContent = AppData.state.aiGroundedMajors;
+                    isHidden = false;
+                } else if (AppData.state.aiDayInLife) {
+                    dynamicTitle = `A DAY IN THE LIFE: ${topRecommendation}`;
+                    dynamicContent = AppData.state.aiDayInLife;
+                    isHidden = false;
+                } else if (AppData.state.aiResumePoints) {
+                    dynamicTitle = `RESUME STARTER KIT: ${topRecommendation}`;
+                    dynamicContent = AppData.state.aiResumePoints;
+                    isHidden = false;
+                }
+
+                const roadmapSectionHtml = `
+                    <div id="roadmap-container" class="mt-8 p-6 border border-zinc-700 bg-zinc-900/50 ${isHidden ? 'hidden' : ''} rounded-lg relative">
+                        <h3 class="text-lg font-bold text-white mb-4" id="roadmap-title">${dynamicTitle}</h3>
+                        <div id="roadmap-content" class="ai-response text-sm text-zinc-300 font-mono leading-relaxed whitespace-pre-line">${dynamicContent.replace(/\n/g, '<br>')}</div>
+                        <div id="audio-container" class="mt-4 hidden border-t border-zinc-700 pt-4">
+                            <p class="text-xs text-zinc-500 font-mono mb-2 uppercase">AI Voice Coach</p>
+                            <audio id="audio-player" controls></audio>
+                        </div>
+                    </div>
+                `;
+
+                // New controls section with the two new features
+                const controlsHtml = AlModule.token ?
+                    `<div class="mt-8 text-center space-y-4 md:space-y-0 md:space-x-4 flex flex-col md:flex-row justify-center flex-wrap gap-y-2">
+                        <button id="generate-jd-btn" class="btn-mono btn-mono-secondary px-4 py-3 rounded-none text-xs font-bold uppercase tracking-widest">Job Description</button>
+                        <button id="generate-iq-btn" class="btn-mono btn-mono-secondary px-4 py-3 rounded-none text-xs font-bold uppercase tracking-widest">Interview Question</button>
+                        <button id="generate-majors-btn" class="btn-mono btn-mono-secondary px-4 py-3 rounded-none text-xs font-bold uppercase tracking-widest">Grounded Majors</button>
+                        <button id="generate-prompt-btn" class="btn-mono btn-mono-secondary px-4 py-3 rounded-none text-xs font-bold uppercase tracking-widest">Self-Reflection</button>
+                        <button id="generate-roadmap-btn" class="btn-mono btn-mono-primary px-4 py-3 rounded-none text-xs font-bold uppercase tracking-widest">4-Week Roadmap</button>
+                        
+                        <!-- NEW FEATURES -->
+                        <button id="generate-day-btn" class="btn-mono btn-mono-primary px-4 py-3 rounded-none text-xs font-bold uppercase tracking-widest border-yellow-500/50 text-yellow-100">✨ Day in Life</button>
+                        <button id="generate-resume-btn" class="btn-mono btn-mono-primary px-4 py-3 rounded-none text-xs font-bold uppercase tracking-widest border-purple-500/50 text-purple-100">✨ Resume Starter</button>
+                        <button id="generate-audio-btn" class="btn-mono btn-mono-primary px-4 py-3 rounded-none text-xs font-bold uppercase tracking-widest border-green-500/50 text-green-100">✨ Hear Your Future</button>
+                    </div>` : '';
+
+                this.els.content.innerHTML = `
+                    <div class="text-center mb-8">
+                        <h2 class="text-3xl font-bold text-white mb-1">ANALYSIS COMPLETE</h2>
+                        <p class="text-zinc-500 text-xs font-mono uppercase">Blueprint for ${AppData.state.user.name}</p>
+                    </div>
+
+                    <div class="grid md:grid-cols-3 gap-8 h-full">
+                        ${aiHtml}
+                        <div class="md:col-span-1 p-6 border border-zinc-800 bg-black/20 rounded-lg">
+                            <h3 class="text-xs font-bold text-white uppercase tracking-widest mb-6 pb-2 border-b border-zinc-800">ACADEMIC DATA</h3>
+                            <p class="text-sm text-zinc-300 font-mono mb-2">GRADE: ${is10th ? '10th' : '12th/ College'}</p>
+                            <p class="text-sm text-zinc-300 font-mono mb-2">MARKS: ${AppData.state.user.marks}%</p>
+                            <p class="text-sm text-zinc-300 font-mono">INTERESTS: ${AppData.state.user.interests.length + (AppData.state.user.customInterest.length > 2 ? 1 : 0)} selected</p>
+                        </div>
+                        <div class="md:col-span-2">
+                            <h3 class="text-xs font-bold text-white uppercase tracking-widest mb-4 pb-2 border-b border-zinc-800">${subHeader}</h3>
+                            <div class="overflow-y-auto max-h-[450px] pr-1">${cardsHtml}</div>
+                        </div>
+                    </div>
+
+                    ${roadmapSectionHtml}
+
+                    ${controlsHtml}
+
+                    <div class="mt-8 text-center">
+                        <button id="restart-btn" class="text-xs text-zinc-500 hover:text-white hover:underline transition-colors font-mono uppercase tracking-widest">Reset System</button>
+                    </div>
+                `;
+
+                // Event listeners for result controls
+                document.getElementById('restart-btn').addEventListener('click', () => location.reload());
+
+                if (AlModule.token) {
+                    const roadmapBtn = document.getElementById('generate-roadmap-btn');
+                    const jdBtn = document.getElementById('generate-jd-btn');
+                    const iqBtn = document.getElementById('generate-iq-btn');
+                    const majorsBtn = document.getElementById('generate-majors-btn');
+                    const promptBtn = document.getElementById('generate-prompt-btn');
+                    
+                    // New Buttons
+                    const dayBtn = document.getElementById('generate-day-btn');
+                    const resumeBtn = document.getElementById('generate-resume-btn');
+                    const audioBtn = document.getElementById('generate-audio-btn');
+
+                    const roadmapContainer = document.getElementById('roadmap-container');
+                    const roadmapTitle = document.getElementById('roadmap-title');
+                    const roadmapContentEl = document.getElementById('roadmap-content');
+                    const audioContainer = document.getElementById('audio-container');
+                    const audioPlayer = document.getElementById('audio-player');
+
+                    const processAiRequest = async (btn, requestType, func, ...args) => {
+                        const originalText = btn.textContent;
+                        btn.disabled = true;
+                        
+                        // Show spinner inside the button
+                        btn.innerHTML = `<div class="spinner w-4 h-4 inline-block align-middle mr-2"></div> Processing...`;
+
+                        const result = await func(...args);
+
+                        // Restore original button text
+                        btn.innerHTML = originalText;
+
+                        if (result) {
+                            // Clear previous state outputs
+                            AppData.state.aiRoadmap = null;
+                            AppData.state.aiJobDescription = null;
+                            AppData.state.aiInterviewQuestion = null;
+                            AppData.state.aiLowTraitPrompt = null;
+                            AppData.state.aiGroundedMajors = null;
+                            AppData.state.aiDayInLife = null;
+                            AppData.state.aiResumePoints = null;
+                            
+                            // Hide audio by default unless this is audio request
+                            audioContainer.classList.add('hidden');
+                            roadmapContentEl.classList.remove('hidden');
+
+                            // Set the current state output and update display
+                            if (requestType === 'roadmap') {
+                                roadmapTitle.textContent = "LEARNING ROADMAP";
+                                AppData.state.aiRoadmap = result;
+                            } else if (requestType === 'jd') {
+                                roadmapTitle.textContent = `JOB DESCRIPTION: ${topRecommendation}`;
+                                AppData.state.aiJobDescription = result;
+                            } else if (requestType === 'iq') {
+                                roadmapTitle.textContent = `INTERVIEW QUESTION (Testing ${topTrait})`;
+                                AppData.state.aiInterviewQuestion = result;
+                            } else if (requestType === 'prompt') {
+                                roadmapTitle.textContent = `SELF-REFLECTION: Improving ${lowTrait}`;
+                                AppData.state.aiLowTraitPrompt = result;
+                            } else if (requestType === 'majors') {
+                                roadmapTitle.textContent = `GROUNDED MAJORS FOR: ${topRecommendation}`;
+                                AppData.state.aiGroundedMajors = result;
+                            } else if (requestType === 'day') {
+                                roadmapTitle.textContent = `A DAY IN THE LIFE: ${topRecommendation}`;
+                                AppData.state.aiDayInLife = result;
+                            } else if (requestType === 'resume') {
+                                roadmapTitle.textContent = `RESUME STARTER KIT: ${topRecommendation}`;
+                                AppData.state.aiResumePoints = result;
+                            } else if (requestType === 'audio') {
+                                roadmapTitle.textContent = `AUDIO COACH: ${topRecommendation}`;
+                                roadmapContentEl.classList.add('hidden'); // Hide text for audio
+                                audioContainer.classList.remove('hidden');
+                                audioPlayer.src = URL.createObjectURL(result);
+                                audioPlayer.play();
+                            }
+
+                            roadmapContainer.classList.remove('hidden');
+                            
+                            // Render text content if not audio
+                            if (requestType !== 'audio') {
+                                roadmapContentEl.innerHTML = result.replace(/\n/g, '<br>');
+                            }
+                            
+                            btn.textContent = "Done!";
+                            setTimeout(() => btn.textContent = originalText, 2000);
+
+                        } else {
+                            btn.textContent = "Error";
+                            setTimeout(() => btn.textContent = originalText, 2000);
+                            UI.toast("AI request failed. Check API key.", true);
+                        }
+
+                        btn.disabled = false;
+                    };
+
+
+                    if (roadmapBtn) {
+                        roadmapBtn.addEventListener('click', (e) =>
+                            processAiRequest(e.target, 'roadmap', AlModule.generateRoadmap, AppData.state));
+                    }
+                    if (jdBtn) {
+                        jdBtn.addEventListener('click', (e) =>
+                            processAiRequest(e.target, 'jd', AlModule.generateJobDescription,
+                                topRecommendation, topTraitsList));
+                    }
+                    if (iqBtn) {
+                        iqBtn.addEventListener('click', (e) =>
+                            processAiRequest(e.target, 'iq', AlModule.generateInterviewQuestion,
+                                topRecommendation, topTrait));
+                    }
+                    if (majorsBtn) {
+                        majorsBtn.addEventListener('click', (e) =>
+                            processAiRequest(e.target, 'majors', AlModule.generateGroundedMajors,
+                                topRecommendation, AppData.getUserTags()));
+                    }
+                    if (promptBtn) {
+                        promptBtn.addEventListener('click', (e) =>
+                            processAiRequest(e.target, 'prompt', AlModule.generateImprovementPrompt,
+                                lowTrait));
+                    }
+                    if (dayBtn) {
+                        dayBtn.addEventListener('click', (e) =>
+                            processAiRequest(e.target, 'day', AlModule.generateDayInLife,
+                                topRecommendation, topTraitsList));
+                    }
+                    if (resumeBtn) {
+                        resumeBtn.addEventListener('click', (e) =>
+                            processAiRequest(e.target, 'resume', AlModule.generateResumePoints,
+                                topRecommendation, topTraitsList));
+                    }
+                    if (audioBtn) {
+                        audioBtn.addEventListener('click', (e) =>
+                            processAiRequest(e.target, 'audio', AlModule.generateAudioPitch,
+                                AppData.state.user.name, topRecommendation, topTraitsList));
+                    }
+                }
+            },
+
+            // --- Validation Functions ---
+            validateIdentity() {
+                return AppData.state.user.name.length > 2;
+            },
+
+            validateBackground() {
+                const is10th = AppData.state.user.grade === '10';
+                const marks = AppData.state.user.marks;
+
+                const hasMarks = marks !== "" && !isNaN(marks) && marks >= 0 && marks <= 100;
+
+                if (is10th) return hasMarks && AppData.state.user.subject !== "";
+                else return hasMarks && AppData.state.user.stream !== "";
+            },
+
+            validateInterests() {
+                const hasSelections = AppData.state.user.interests.length > 0;
+                const customInterest = AppData.state.user.customInterest;
+
+                const hasValidCustom = customInterest.length === 0 || customInterest.length >= 3;
+
+                // Allow moving forward if at least one item is selected OR a custom field of 3+ chars is provided
+                return hasValidCustom && (hasSelections || customInterest.length >= 3);
+            },
+
+            validateQuiz() {
+                return true;
+            } // Validation handled by auto-advance logic
+        };
+
+        // Initialize Modules
+        window.onload = function() {
+            ThreeBG.init();
+            UI.init();
+            FirebaseModule.init();
+        }
+    </script>
 </body>
+
 </html>
