@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Career Guidance | Gemini Powered</title>
-    <meta name="description" content="AI-driven career pathfinder powered by Google Gemini.">
+    <title>Career Guidance | Intelligent Pathfinding</title>
+    <meta name="description" content="AI-driven career pathfinder based on skills and traits.">
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -172,7 +172,7 @@
                 <h1 class="text-3xl md:text-4xl font-bold text-white tracking-tight uppercase cursor-pointer" onclick="location.reload()">
                     CAREER<span class="font-light text-zinc-500">GUIDANCE</span>
                 </h1>
-                <p class="text-zinc-500 text-xs mt-1 font-mono tracking-widest uppercase">Powered by Google Gemini</p>
+                <p class="text-zinc-500 text-xs mt-1 font-mono tracking-widest uppercase">Deep Analysis v4.4</p>
             </div>
             <div class="flex flex-col items-end gap-2">
                 <div id="progress-text" class="text-xs font-mono text-white hidden md:block">00%</div>
@@ -193,7 +193,7 @@
         <!-- Initial Loader -->
         <div id="initial-loading" class="flex flex-col items-center justify-center flex-grow">
             <div class="spinner w-8 h-8 mb-4"></div>
-            <p class="text-zinc-400 text-xs font-mono animate-pulse uppercase">Initializing Gemini Core...</p>
+            <p class="text-zinc-400 text-xs font-mono animate-pulse uppercase">Loading Neural Maps...</p>
         </div>
 
         <!-- Dynamic Content Area -->
@@ -231,7 +231,8 @@
                 <div class="h-1 w-20 bg-white mx-auto mt-4"></div>
             </div>
             <p class="text-zinc-400 text-sm mb-10 font-light leading-relaxed max-w-xs mx-auto">
-                Advanced career pathfinding using <strong>Google Gemini</strong> AI. Identify your ideal trajectory based on Aptitude, Marks, and Personality.
+                Identify your ideal professional trajectory based on Stream, Interests, and Aptitude. <br/>
+                <span class="text-white font-bold text-xs mt-2 block uppercase">Optimized for Class 10 & 12</span>
             </p>
             
             <button id="start-btn" type="button"
@@ -245,19 +246,19 @@
     <div id="settings-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/90 hidden backdrop-blur-sm fade-in">
         <div class="bg-zinc-900 border border-zinc-700 p-8 max-w-md w-full relative shadow-2xl">
             <button id="close-settings" class="absolute top-4 right-4 text-zinc-500 hover:text-white">&times;</button>
-            <h3 class="text-lg font-bold text-white mb-4 font-mono uppercase">Gemini Configuration</h3>
+            <h3 class="text-lg font-bold text-white mb-4 font-mono uppercase">Smart AI Configuration</h3>
             <p class="text-zinc-400 text-xs mb-6 leading-relaxed">
-                Enable smart insights using the Google Gemini API.
+                Enable advanced AI insights using the Hugging Face API (Open Source).
                 <br/><br/>
-                1. Get a FREE API key from <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-white underline">Google AI Studio</a>
+                1. Get a FREE token: <a href="https://huggingface.co/settings/tokens" target="_blank" class="text-white underline">huggingface.co</a>
                 <br/>
                 2. Paste it below.
             </p>
-            <label class="block text-[10px] font-bold text-zinc-500 uppercase mb-2">Gemini API Key</label>
-            <input id="hf-token-input" type="password" class="w-full p-3 input-mono text-sm mb-6" placeholder="AIza...">
+            <label class="block text-[10px] font-bold text-zinc-500 uppercase mb-2">Hugging Face Token</label>
+            <input id="hf-token-input" type="password" class="w-full p-3 input-mono text-sm mb-6" placeholder="hf_...">
             
             <div class="flex justify-end gap-4">
-                <button id="save-settings" class="btn-mono btn-mono-primary px-6 py-2 text-xs font-bold uppercase">Save Key</button>
+                <button id="save-settings" class="btn-mono btn-mono-primary px-6 py-2 text-xs font-bold uppercase">Save Token</button>
             </div>
         </div>
     </div>
@@ -282,10 +283,11 @@
         async generateInsight(profile) {
             if (!this.token) return null;
 
+            let prompt = "";
             const is10th = profile.user.grade === '10';
             const lowMarks = parseInt(profile.user.marks) < 60;
             
-            const prompt = `
+            prompt = `
             You are a senior career counselor. Analyze this student:
             - Name: ${profile.user.name}
             - Grade: ${profile.user.grade}
@@ -298,14 +300,14 @@
 
             Provide a 3-point analysis using bolding for key terms:
             1. Recommended Path (${is10th ? 'Stream' : 'Career Role'}).
-            2. Why it fits their personality/interests.
+            2. Why it fits their personality/interests (be encouraging).
             3. A practical first step (Course, Project, or Skill).
             
-            Keep it concise and professional.
+            Keep it concise, professional, and supportive.
             `;
 
             try {
-                const url = https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${this.token};
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${this.token}`;
                 const response = await fetch(url, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -330,7 +332,7 @@
             `;
 
             try {
-                const url = https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${this.token};
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${this.token}`;
                 const response = await fetch(url, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -412,7 +414,7 @@
                 errEl.className = "text-red-500 text-[10px] mt-1 font-mono hidden";
                 input.parentNode.insertBefore(errEl, input.nextSibling);
             }
-            if (show) { input.classList.add('error'); errEl.textContent = > ${msg}; errEl.classList.remove('hidden'); }
+            if (show) { input.classList.add('error'); errEl.textContent = `> ${msg}`; errEl.classList.remove('hidden'); }
             else { input.classList.remove('error'); errEl.classList.add('hidden'); }
         }
     };
@@ -424,19 +426,19 @@
         traits: ['Logic', 'Creativity', 'Communication', 'DetailOrientation', 'Empathy', 'Physical', 'Resilience'],
         
         streams: [
-            { id: 'SciencePCM', label: 'Science (PCM)' },
-            { id: 'SciencePCB', label: 'Science (PCB)' },
-            { id: 'Commerce', label: 'Commerce' },
-            { id: 'Arts', label: 'Arts & Humanities' }
+            { id: 'SciencePCM', label: 'Science (PCM)', tags: ['Tech', 'Logic', 'Mech'] },
+            { id: 'SciencePCB', label: 'Science (PCB)', tags: ['Bio', 'Nature', 'Research'] },
+            { id: 'Commerce', label: 'Commerce', tags: ['Finance', 'Business', 'Math'] },
+            { id: 'Arts', label: 'Arts & Humanities', tags: ['Design', 'Media', 'Social'] }
         ],
 
         subjects: [
-            { id: 'Math', label: 'Mathematics' },
-            { id: 'Science', label: 'Science' },
-            { id: 'Social', label: 'Social Studies' },
-            { id: 'English', label: 'English/Literature' },
-            { id: 'Arts', label: 'Arts/Craft' },
-            { id: 'CompApp', label: 'Computer Applications' }
+            { id: 'Math', label: 'Mathematics', tags: ['Logic', 'Finance', 'Tech'] },
+            { id: 'Science', label: 'Science', tags: ['Bio', 'Research', 'Tech'] },
+            { id: 'Social', label: 'Social Studies', tags: ['Social', 'Law', 'History'] },
+            { id: 'English', label: 'English/Literature', tags: ['Communication', 'Media', 'Writing'] },
+            { id: 'Arts', label: 'Arts/Craft', tags: ['Design', 'Creativity'] },
+            { id: 'CompApp', label: 'Computer Applications', tags: ['Tech', 'Logic'] }
         ],
 
         interestsList: [
@@ -533,31 +535,49 @@
 
             const userInterests = this.state.user.interests; 
             const relevantTags = new Set();
+            
+            // Add tags from interests
             userInterests.forEach(intId => {
                 const interestObj = this.interestsList.find(i => i.id === intId);
                 if(interestObj) interestObj.tags.forEach(t => relevantTags.add(t));
             });
 
+            // Add tags from Stream/Subject
+            if(this.state.user.grade === '10') {
+                const subObj = this.subjects.find(s => s.id === this.state.user.subject);
+                if(subObj) subObj.tags.forEach(t => relevantTags.add(t));
+            } else {
+                const strObj = this.streams.find(s => s.id === this.state.user.stream);
+                if(strObj) strObj.tags.forEach(t => relevantTags.add(t));
+            }
+
+            // 1. Prioritize Matches
             let matchedQuestions = this.questionBank.filter(q => 
                 q.tags.some(t => relevantTags.has(t))
-            ).map(q => ({...q, id: dyn_${Math.random().toString(36).substr(2,9)}}));
+            ).map(q => ({...q, id: `dyn_${Math.random().toString(36).substr(2,9)}`}));
             matchedQuestions.sort(() => 0.5 - Math.random());
 
+            // 2. Base Personality Questions
             const baseQuestions = this.questionBank.filter(q => 
                 ['Personality', 'Grit', 'Logic', 'Creativity'].includes(q.tags[0])
-            ).map((q,i) => ({...q, id: base_${i}}));
+            ).map((q,i) => ({...q, id: `base_${i}`}));
             
+            // 3. Practical Questions
             const practicalQuestions = this.questionBank.filter(q => 
                 ['Practical', 'Physical'].includes(q.tags[0])
-            ).map((q,i) => ({...q, id: prac_${i}}));
+            ).map((q,i) => ({...q, id: `prac_${i}`}));
 
             let quizSet = [...matchedQuestions];
             quizSet = [...quizSet, ...baseQuestions];
+            
             if (marks < 60) {
                 quizSet = [...quizSet, ...practicalQuestions];
             }
+
+            // De-duplicate
             quizSet = quizSet.filter((v,i,a)=>a.findIndex(t=>(t.text===v.text))===i);
             
+            // Slice to target length
             if (quizSet.length > targetLength) {
                 quizSet = quizSet.slice(0, targetLength); 
             }
@@ -635,7 +655,7 @@
     const FirebaseModule = {
         db: null, userId: null,
         async init() {
-            const configRaw = (typeof _firebase_config !== 'undefined') ? JSON.parse(_firebase_config) : null;
+            const configRaw = (typeof __firebase_config !== 'undefined') ? JSON.parse(__firebase_config) : null;
             if (!configRaw) return;
             try {
                 const app = initializeApp(configRaw);
@@ -655,7 +675,7 @@
             if (!this.db || !this.userId) return;
             const appId = (typeof __app_id !== 'undefined') ? __app_id : 'default';
             try {
-                await setDoc(doc(this.db, artifacts/${appId}/users/${this.userId}/results, result_${Date.now()}), AppData.state);
+                await setDoc(doc(this.db, `artifacts/${appId}/users/${this.userId}/results`, `result_${Date.now()}`), AppData.state);
                 if (typeof UI !== 'undefined') UI.toast("DATA SYNCED TO CLOUD");
             } catch (e) { 
                 console.error("Save Failed:", e);
@@ -733,22 +753,22 @@
             if (!this.els || !this.els.msgBox) {
                 const box = document.getElementById('message-box');
                 if (!box) return; 
-                box.textContent = > ${msg};
-                box.className = mt-4 p-3 text-xs font-mono text-center transition-all fade-in border ${isError ? 'bg-red-900/20 text-red-400 border-red-900' : 'bg-zinc-900 text-zinc-300 border-zinc-700'};
+                box.textContent = `> ${msg}`;
+                box.className = `mt-4 p-3 text-xs font-mono text-center transition-all fade-in border ${isError ? 'bg-red-900/20 text-red-400 border-red-900' : 'bg-zinc-900 text-zinc-300 border-zinc-700'}`;
                 box.classList.remove('hidden');
                 setTimeout(() => box.classList.add('hidden'), 3000);
                 return;
             }
-            this.els.msgBox.textContent = > ${msg};
-            this.els.msgBox.className = mt-4 p-3 text-xs font-mono text-center transition-all fade-in border ${isError ? 'bg-red-900/20 text-red-400 border-red-900' : 'bg-zinc-900 text-zinc-300 border-zinc-700'};
+            this.els.msgBox.textContent = `> ${msg}`;
+            this.els.msgBox.className = `mt-4 p-3 text-xs font-mono text-center transition-all fade-in border ${isError ? 'bg-red-900/20 text-red-400 border-red-900' : 'bg-zinc-900 text-zinc-300 border-zinc-700'}`;
             this.els.msgBox.classList.remove('hidden');
             setTimeout(() => this.els.msgBox.classList.add('hidden'), 3000);
         },
 
         updateProgress(stepIdx) {
             const pct = Math.round(((stepIdx + 1) / this.steps.length) * 100);
-            this.els.progressBar.style.width = ${pct}%;
-            this.els.progressText.textContent = ${pct.toString().padStart(2, '0')}%;
+            this.els.progressBar.style.width = `${pct}%`;
+            this.els.progressText.textContent = `${pct.toString().padStart(2, '0')}%`;
         },
 
         gotoStep(idx) {
@@ -840,7 +860,7 @@
                     <div class="mb-6">
                         <label class="block text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-2">Strongest Subject</label>
                         <div class="grid grid-cols-2 gap-2">
-                            ${AppData.subjects.map(s => <button class="subj-opt selection-card p-3 text-left text-xs ${AppData.state.user.subject === s.id ? 'active' : ''}" data-id="${s.id}">${s.label}</button>).join('')}
+                            ${AppData.subjects.map(s => `<button class="subj-opt selection-card p-3 text-left text-xs ${AppData.state.user.subject === s.id ? 'active' : ''}" data-id="${s.id}">${s.label}</button>`).join('')}
                         </div>
                     </div>
                     <div>
@@ -853,7 +873,7 @@
                     <h2 class="text-2xl font-bold text-white mb-2">ACADEMIC STREAM (12th)</h2>
                     <p class="text-zinc-500 text-sm mb-6 font-mono">WHAT DID YOU STUDY?</p>
                     <div class="grid grid-cols-1 gap-3 mb-6">
-                        ${AppData.streams.map(s => <button class="stream-opt selection-card p-4 text-left ${AppData.state.user.stream === s.id ? 'active' : ''}" data-id="${s.id}"><span class="text-sm font-mono uppercase tracking-wider pointer-events-none">${s.label}</span></button>).join('')}
+                        ${AppData.streams.map(s => `<button class="stream-opt selection-card p-4 text-left ${AppData.state.user.stream === s.id ? 'active' : ''}" data-id="${s.id}"><span class="text-sm font-mono uppercase tracking-wider pointer-events-none">${s.label}</span></button>`).join('')}
                     </div>
                     <div>
                         <label class="block text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-2">12th Grade %</label>
@@ -880,9 +900,9 @@
             const filteredInterests = AppData.interestsList.filter(i => is10th || i.streams.includes('All') || i.streams.includes(currentStream));
             const html = filteredInterests.map(opt => {
                 const active = AppData.state.user.interests.includes(opt.id);
-                return <button class="selection-card p-4 text-left h-full flex flex-col justify-center ${active ? 'active' : ''}" data-id="${opt.id}"><span class="text-xs md:text-sm font-mono uppercase tracking-wider block pointer-events-none">${opt.label}</span></button>;
+                return `<button class="selection-card p-4 text-left h-full flex flex-col justify-center ${active ? 'active' : ''}" data-id="${opt.id}"><span class="text-xs md:text-sm font-mono uppercase tracking-wider block pointer-events-none">${opt.label}</span></button>`;
             }).join('');
-            this.els.content.innerHTML = <h2 class="text-2xl font-bold text-white mb-2">INTERESTS</h2><p class="text-zinc-500 text-sm mb-8 font-mono">WHAT DO YOU LOVE?</p><div class="grid grid-cols-2 gap-4 max-h-[300px] overflow-y-auto pr-2">${html}</div>;
+            this.els.content.innerHTML = `<h2 class="text-2xl font-bold text-white mb-2">INTERESTS</h2><p class="text-zinc-500 text-sm mb-8 font-mono">WHAT DO YOU LOVE?</p><div class="grid grid-cols-2 gap-4 max-h-[300px] overflow-y-auto pr-2">${html}</div>`;
             this.els.content.querySelectorAll('.selection-card').forEach(btn => {
                 btn.addEventListener('click', () => {
                     const id = btn.dataset.id;
@@ -963,7 +983,7 @@
             const options = AppData.interestsList.filter(i => selectedIds.includes(i.id));
             const html = options.map(opt => {
                 const isSelected = AppData.state.refinedInterests.includes(opt.id);
-                return <button class="selection-card p-4 text-left h-full flex flex-col justify-center ${isSelected ? 'active' : ''}" data-id="${opt.id}"><span class="text-xs md:text-sm font-mono uppercase tracking-wider block pointer-events-none">${opt.label}</span></button>;
+                return `<button class="selection-card p-4 text-left h-full flex flex-col justify-center ${isSelected ? 'active' : ''}" data-id="${opt.id}"><span class="text-xs md:text-sm font-mono uppercase tracking-wider block pointer-events-none">${opt.label}</span></button>`;
             }).join('');
 
             this.els.content.innerHTML = `
@@ -1015,9 +1035,9 @@
 
             let aiHtml = '';
             if (AppData.state.aiResponse) {
-                aiHtml = <div class="md:col-span-3 p-6 border border-white bg-white/10 relative overflow-hidden mb-4"><div class="absolute top-0 right-0 p-2 text-[10px] bg-white text-black font-bold font-mono">AI GENERATED INSIGHT</div><div class="ai-response text-sm text-zinc-200 leading-relaxed font-light">${Utils.sanitize(AppData.state.aiResponse).replace(/\n/g, '<br>')}</div></div>;
+                aiHtml = `<div class="md:col-span-3 p-6 border border-white bg-white/10 relative overflow-hidden mb-4"><div class="absolute top-0 right-0 p-2 text-[10px] bg-white text-black font-bold font-mono">AI GENERATED INSIGHT</div><div class="ai-response text-sm text-zinc-200 leading-relaxed font-light">${Utils.sanitize(AppData.state.aiResponse).replace(/\n/g, '<br>')}</div></div>`;
             } else if (!AIModule.token) {
-                aiHtml = <div class="md:col-span-3 p-4 border border-zinc-800 border-dashed text-center mb-4"><p class="text-zinc-500 text-xs font-mono">SMART AI DISABLED. CONFIGURE TOKEN IN SETTINGS.</p></div>;
+                aiHtml = `<div class="md:col-span-3 p-4 border border-zinc-800 border-dashed text-center mb-4"><p class="text-zinc-500 text-xs font-mono">SMART AI DISABLED. CONFIGURE TOKEN IN SETTINGS.</p></div>`;
             }
 
             // Add Roadmap Button
